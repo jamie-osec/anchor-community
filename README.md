@@ -1,8 +1,6 @@
 # Anchor Community Repositories
 
-A starter directory of substantial, well-written Anchor repositories in the Solana ecosystem.
-
-The first pass is biased toward protocols that are large on DeFiLlama and have public program source that is useful to read, audit, or learn from. This is not an endorsement of protocol risk, only a source-code reading list.
+A directory of Anchor repositories in the Solana ecosystem.
 
 | Repository | Vendored path | Description |
 | --- | --- | --- |
@@ -25,9 +23,3 @@ The first pass is biased toward protocols that are large on DeFiLlama and have p
 | [Squads Protocol / v4](https://github.com/Squads-Protocol/v4) | [programs/v4](programs/v4) | Squads v4 multisig. Not DeFi TVL-first, but important Solana infrastructure and a strong Anchor reference for multisig accounts, proposals, spending limits, program upgrades, and verifiable builds. |
 
 For a machine-parseable format, see [repos.json](repos.json).
-
-To vendor every pinned repository into `./programs`, run `make fetch`. To fetch and build every pinned repository, run `make build`. To build one repository, run `make build REPO=helium-program-library`.
-
-`make fetch` clones each repository into a temporary directory, checks out the pinned commit, removes `.git`, prunes every path listed in that repo's `ignored` array, and vendors the remaining tree into `programs/<directory>`. If that directory already exists, it must be structurally identical with matching file hashes or the fetch fails.
-
-Fetching requires `make`, `python3`, and `git`; building also requires `anchor`.
