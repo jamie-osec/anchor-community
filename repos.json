@@ -4,7 +4,7 @@
     "source": "https://github.com/Kamino-Finance/klend",
     "commit": "4c7653a12276ded3bcaf95a3474973ca135ca810",
     "directory": "klend",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "target",
       "libs/klend-interface/docs"
@@ -15,7 +15,7 @@
     "source": "https://github.com/orca-so/whirlpools",
     "commit": "a119d79bada4e730fef791cac6adb669405a21de",
     "directory": "whirlpools",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       ".audits",
       "docs",
@@ -35,7 +35,7 @@
     "source": "https://github.com/drift-labs/protocol-v2",
     "commit": "0ae3e3b1db782a6765c3525b3dec38ad4d9d3a62",
     "directory": "protocol-v2",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "sdk",
       "target",
@@ -54,7 +54,7 @@
     "source": "https://github.com/0dotxyz/marginfi-v2",
     "commit": "843aa82df852b9e9a3c555e67ffd12aa53f4805b",
     "directory": "marginfi-v2",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "audits",
       "target",
@@ -76,7 +76,7 @@
     "source": "https://github.com/raydium-io/raydium-clmm",
     "commit": "a0c0c181dfc759a1012e8e6172cc56516c9d57bc",
     "directory": "raydium-clmm",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "target"
     ]
@@ -86,7 +86,7 @@
     "source": "https://github.com/raydium-io/raydium-cp-swap",
     "commit": "609780f165d234a0aa9699cac90178a3fa36fd43",
     "directory": "raydium-cp-swap",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "target"
     ]
@@ -96,7 +96,7 @@
     "source": "https://github.com/MeteoraAg/damm-v2",
     "commit": "58a13fcf45516a9f27f2bd2a2056fb66673454e0",
     "directory": "damm-v2",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "target",
       "tests/fixtures/alpha_vault.so",
@@ -110,7 +110,7 @@
     "source": "https://github.com/MeteoraAg/dynamic-bonding-curve",
     "commit": "b4f954733f0e88258f1eb3f0eff75e4314c9610c",
     "directory": "dynamic-bonding-curve",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "clients",
       "rust-sdk",
@@ -129,7 +129,7 @@
     "source": "https://github.com/marinade-finance/liquid-staking-program",
     "commit": "26147376b75d8c971963da458623e646f2795e15",
     "directory": "liquid-staking-program",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "target"
     ]
@@ -139,7 +139,7 @@
     "source": "https://github.com/jito-foundation/stakenet",
     "commit": "0a708371f5859dabe5df0902dfc565add7282007",
     "directory": "stakenet",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "docs",
       "security-audits",
@@ -154,7 +154,7 @@
     "source": "https://github.com/blockworks-foundation/mango-v4",
     "commit": "ee671d24bb4f9386adc2d146f5180d4760838222",
     "directory": "mango-v4",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "audits",
       "docs",
@@ -170,7 +170,7 @@
     "source": "https://github.com/gmsol-labs/gmx-solana",
     "commit": "1156514934791a22fb5576799f3b8912de67a12e",
     "directory": "gmx-solana",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "docs",
       "target",
@@ -186,7 +186,7 @@
     "source": "https://github.com/openbook-dex/openbook-v2",
     "commit": "f3e17421e675b083b584867594bf3cf4f675d156",
     "directory": "openbook-v2",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "audit",
       "target"
@@ -197,7 +197,7 @@
     "source": "https://github.com/onre-finance/onre-sol",
     "commit": "361cd588ba48b89a44236801140cdc2b5d110251",
     "directory": "onre-sol",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "docs",
       "target"
@@ -208,7 +208,7 @@
     "source": "https://github.com/helium/helium-program-library",
     "commit": "3fa2a7c3f0405f90440f599f8d288361b6a2a2f3",
     "directory": "helium-program-library",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "docs",
       "docsite",
@@ -259,7 +259,7 @@
     "source": "https://github.com/wormhole-foundation/native-token-transfers",
     "commit": "3fb0fc97b65246167de14bcdaaf3c4eadba8927b",
     "directory": "native-token-transfers",
-    "build_command": "cd solana && anchor build --ignore-keys",
+    "build_command": "cd solana && anchor keys sync && anchor build",
     "ignored": [
       "audits",
       "docs",
@@ -284,7 +284,7 @@
     "source": "https://github.com/Squads-Protocol/v4",
     "commit": "edbca83427b10cbe58bf65fc9b597e8eb7b17cc1",
     "directory": "v4",
-    "build_command": "anchor build --ignore-keys",
+    "build_command": "anchor keys sync && anchor build",
     "ignored": [
       "app",
       "audits",
