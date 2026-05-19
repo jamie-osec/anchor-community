@@ -1,0 +1,28 @@
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[workspace]
+exclude = ["programs/openbook_v2"]
+
+[scripts]
+# to run local validator tests, use "./test-scripts/run-ts-mocha" in "test"
+test = "echo" # need to call anchor test to update metadata field in idl before running tests, so just do a noop
+lint = "yarn prettify:fix && cargo fmt"
+fulltest = 'cargo test && bash ./test-scripts/run-anchor-tests.sh'
+watch_ts = 'find ./programs/clearing_house/src/* ./tests ./sdk/src | entr -c bash ./test-scripts/single-anchor-test.sh'
+watch_build = 'find ./programs/clearing_house/src/* ./tests ./sdk/src | entr -c anchor build'
+watch_cargo = 'find ./programs/clearing_house/src/* ./tests ./sdk/src | entr -c cargo test -- --show-output'
+
+[programs.localnet]
+drift = "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+pyth = "FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH"
+token_faucet = "V4v1mQiAdLz4qwckEb45WqHYceYizoib39cDBHSWfaB"
+
+[[test.validator.account]]
+address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+filename = "./deps/configs/usdc.json"
+
+[[test.validator.account]]
+address = "3rdJbqfnagQ4yx9HXJViD4zc4xpiSqmFsKpPuSCQVyQL"
+filename = "./deps/configs/pyth_lazer_storage.json"

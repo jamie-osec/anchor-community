@@ -1,0 +1,23 @@
+[features]
+resolution = false
+skip-lint = false
+[programs.localnet]
+validator_history = "HistoryJTGbKQD2mRgLZ3XhqHnN811Qpez8X9kCcGHoa"
+steward = "Stewardf95sJbmtcZsyagb2dg4Mo8eVQho8gpECvLx8"
+
+[workspace]
+members = [
+    "programs/validator-history",
+    "programs/steward",
+]
+exclude = ["keepers", "utils"]
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "cargo +nightly test"

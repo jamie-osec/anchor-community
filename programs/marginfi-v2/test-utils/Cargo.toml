@@ -1,0 +1,47 @@
+[package]
+name = "test-utilities"
+version = "0.1.0"
+publish = false
+edition = "2021"
+
+[features]
+default = []
+transfer-hook = ["transfer_hook"]
+
+[dependencies]
+marginfi-type-crate = { workspace = true, features = ["anchor"] }
+kamino-mocks = { path = "../programs/kamino-mocks" , features = ["no-entrypoint"]}
+drift-mocks = { path = "../programs/drift-mocks" , features = ["no-entrypoint"]}
+juplend-mocks = { path = "../programs/juplend-mocks" , features = ["no-entrypoint"]}
+
+solana-cli-output = { workspace = true }
+solana-program = { workspace = true }
+solana-logger = { workspace = true }
+solana-program-test = { workspace = true }
+solana-sdk = { workspace = true }
+spl-transfer-hook-interface = { workspace = true }
+
+anchor-lang = { workspace = true }
+anchor-spl = { workspace = true }
+
+pyth-solana-receiver-sdk = { workspace = true }
+switchboard-on-demand = { workspace = true }
+
+bytemuck = { workspace = true }
+fixed = { workspace = true }
+fixed-macro = { workspace = true }
+lazy_static = { workspace = true }
+static_assertions = { workspace = true }
+anyhow = "1.0.66"
+assert_matches = "1.5.0"
+bincode = "1.3.3"
+futures = "0.3.25"
+pretty_assertions = "1.2.1"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
+
+marginfi = { workspace = true, features = ["test-bpf"] }
+transfer_hook = { workspace = true, features = [
+    "no-entrypoint",
+], optional = true }
+mocks = { workspace = true, features = ["no-entrypoint"] }

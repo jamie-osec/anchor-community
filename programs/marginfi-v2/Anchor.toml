@@ -1,0 +1,226 @@
+[toolchain]
+anchor_version = "0.31.1"
+solana_version = "2.1.20"
+# Getting "thread 'main' panicked at cli/src/lib.rs:545:18:"? Check your toolchain matches the above.
+
+[workspace]
+members = ["programs/marginfi", "programs/mocks", "programs/test_transfer_hook"]
+# exclude = [
+#   "programs/test_transfer_hook",
+# ]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+marginfi = "2jGhuVUuy3umdzByFx8sNWUAaf5vaeuDm78RDPEnhrMr"
+mocks = "rec5EKMGg6MxZYaMdyBfgwp4d5rB9T1VQH5pJv5LtFJ"
+spl_single_pool = "SVSPxpvHdN29nkVg9rPapPNDddN5DipNLRUFhyjFThE" # cloned from solana-labs repo (see below)
+# liquidity_incentive_program = "Lip1111111111111111111111111111111111111111"
+kamino_lending = "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD"
+kamino_farms = "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+drift = "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+solend = "So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo"
+
+# Jupiter Lend (JupLend / Fluid)
+juplend_lending = "jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9"
+juplend_liquidity = "jupeiUmn818Jg1ekPURTpr4mFo29p46vygyykFJ3wZC"
+juplend_rewards_rate_model = "jup7TthsMgcR9Y3L277b8Eo9uboVSmu1utkuXHNUKar"
+token_metadata = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+
+[programs.mainnet]
+# liquidity_incentive_program = "LipsxuAkFkwa4RKNzn51wAsW7Dedzt1RNHMkTkDEZUW"
+marginfi = "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+# (remove RUST_LOG= to see bankRun logs)
+[scripts]
+test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/*.spec.ts --exit --require tests/rootHooks.ts"
+
+# All tests (for CI)
+all-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Bankrun-only runner (no local validator)
+# Use: anchor run kamino-tests
+kamino-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/k*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Basic tests (01-17)
+basic-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/0*.spec.ts tests/1*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Emode tests (e01-e06)
+emode-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/e*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Pyth pull tests (p01)
+pyth-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/p*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Multi-limits tests (m01-m02)
+limits-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/m*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Drift tests (d01-d14)
+drift-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/d*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Solend tests (sl01-sl09)
+solend-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/sl*.spec.ts --exit --require tests/rootHooks.ts"
+
+# JupLend tests (jl01-jl11)
+juplend-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/jl*.spec.ts --exit --require tests/rootHooks.ts"
+
+# JupLend Token-2022 test only (jl11)
+juplend-token2022-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/jl11*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Bankruptcy tests (z*, zb*)
+bankruptcy-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/z*.spec.ts tests/zb*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Staked collateral tests only (s01-s10) - excludes solend (sl*) via pattern
+staked-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 'tests/s[0-9]*.spec.ts' --exit --require tests/rootHooks.ts"
+
+# Kamino FIRST - to test if order matters (state pollution check)
+kamino-first-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/k*.spec.ts tests/0*.spec.ts tests/1*.spec.ts tests/e*.spec.ts tests/p*.spec.ts tests/m*.spec.ts tests/d*.spec.ts tests/sl*.spec.ts tests/z*.spec.ts tests/zb*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Drift FIRST - state pollution check
+drift-first-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/d*.spec.ts tests/0*.spec.ts tests/1*.spec.ts tests/e*.spec.ts tests/p*.spec.ts tests/m*.spec.ts tests/sl*.spec.ts tests/z*.spec.ts tests/zb*.spec.ts tests/k*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Solend FIRST - state pollution check
+solend-first-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/sl*.spec.ts tests/0*.spec.ts tests/1*.spec.ts tests/e*.spec.ts tests/p*.spec.ts tests/m*.spec.ts tests/d*.spec.ts tests/z*.spec.ts tests/zb*.spec.ts tests/k*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Basic tests LAST - state pollution check
+basic-last-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/k*.spec.ts tests/d*.spec.ts tests/sl*.spec.ts tests/e*.spec.ts tests/p*.spec.ts tests/m*.spec.ts tests/z*.spec.ts tests/zb*.spec.ts tests/0*.spec.ts tests/1*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Emode FIRST - state pollution check
+emode-first-tests = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/e*.spec.ts tests/0*.spec.ts tests/1*.spec.ts tests/p*.spec.ts tests/m*.spec.ts tests/d*.spec.ts tests/sl*.spec.ts tests/z*.spec.ts tests/zb*.spec.ts tests/k*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Staked collateral tests only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/s*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Pyth pull test only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/p*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Emode tests only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/e*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Basic tests only (01-1X)
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/0*.spec.ts tests/1*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Just the first few tests only (01-09)
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/0*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Emode tests only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/e*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Kamino tests only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/k*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Drift tests only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/d*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Solend tests only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/sl*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Multiple account limits test only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/m*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Compound interest only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/z*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Bankruptcy only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/zb*.spec.ts --exit --require tests/rootHooks.ts"
+
+# Drift and Solend tests only
+# test = "RUST_LOG= yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/d*.spec.ts tests/sl*.spec.ts --exit --require tests/rootHooks.ts"
+
+[test]
+startup_wait = 60000
+shutdown_wait = 2000
+upgradeable = false
+
+[[test.genesis]]
+address = "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD"
+program = "tests/fixtures/kamino_lending.so"
+
+[[test.genesis]]
+address = "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+program = "tests/fixtures/kamino_farms.so"
+
+[[test.genesis]]
+address = "SVSPxpvHdN29nkVg9rPapPNDddN5DipNLRUFhyjFThE"
+program = "tests/fixtures/spl_single_pool.so"
+
+[[test.genesis]]
+address = "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+program = "tests/fixtures/drift.so"
+
+[[test.genesis]]
+address = "So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo"
+program = "tests/fixtures/solend.so"
+
+
+[[test.genesis]]
+address = "jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9"
+program = "tests/fixtures/juplend_lending.so"
+
+[[test.genesis]]
+address = "jupeiUmn818Jg1ekPURTpr4mFo29p46vygyykFJ3wZC"
+program = "tests/fixtures/juplend_liquidity.so"
+
+[[test.genesis]]
+address = "jup7TthsMgcR9Y3L277b8Eo9uboVSmu1utkuXHNUKar"
+program = "tests/fixtures/juplend_rewards_rate_model.so"
+
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "tests/fixtures/token_metadata.so"
+
+[test.validator]
+bind_address = "0.0.0.0"
+ledger = ".anchor/test-ledger"
+rpc_port = 8899
+
+[[test.validator.account]]
+address = "DeyH7QxWvnbbaVB4zFrf4hoq7Q8z1ZT14co42BGwGtfM"
+filename = "tests/fixtures/bonk_bank.json"
+
+[[test.validator.account]]
+address = "4kNXetv8hSv9PzvzPZzEs1CTH6ARRRi2b8h6jk1ad1nP"
+filename = "tests/fixtures/cloud_bank.json"
+
+[[test.validator.account]]
+address = "Fe5QkKPVAh629UPP5aJ8sDZu8HTfe6M26jDQkKyXVhoA"
+filename = "tests/fixtures/pyusd_bank.json"
+
+[[test.validator.account]]
+address = "8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN"
+filename = "tests/fixtures/localnet_usdc.json"
+
+[[test.validator.account]]
+address = "7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE"
+filename = "tests/fixtures/sol_pyth_price_feed.json"
+
+[[test.validator.account]]
+address = "H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG"
+filename = "tests/fixtures/sol_pyth_oracle.json"
+
+[[test.validator.account]]
+address = "7qoe1Xmd3WUfPFHQaMYMGwSJT2mU55t3d4C4ZXZ1GJmn"
+filename = "tests/fixtures/gappy_user3.json"
+
+[[test.validator.account]]
+address = "6pbRghQuRw9AsPJqhrGLFRVYDcvfXeGh4zNdYMt8mods"
+filename = "tests/fixtures/gappy_user4.json"
+
+[[test.validator.account]]
+address = "4qp6Fx6tnZkY5Wropq9wUYgtFxXKwE6viZxFHg3rdAG8"
+filename = "tests/fixtures/mainnet_group.json"
+
+
+# To update:
+# clone https://github.com/solana-labs/solana-program-library/tree/master and run cargo build-sbf in spl_single_pool
+[[test.genesis]]
+address = "SVSPxpvHdN29nkVg9rPapPNDddN5DipNLRUFhyjFThE" # spl single pool program
+program = "tests/fixtures/spl_single_pool.so"

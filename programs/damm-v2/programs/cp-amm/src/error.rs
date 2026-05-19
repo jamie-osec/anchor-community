@@ -1,0 +1,229 @@
+//! Error module includes error messages and codes of the program
+use anchor_lang::prelude::*;
+use protocol_zap::error::ProtozolZapError;
+
+/// Error messages and codes of the program
+#[error_code]
+#[derive(PartialEq)]
+pub enum PoolError {
+    #[msg("Math operation overflow")]
+    MathOverflow,
+
+    #[msg("Invalid fee setup")]
+    InvalidFee,
+
+    #[msg("Exceeded slippage tolerance")]
+    ExceededSlippage,
+
+    #[msg("Pool disabled")]
+    PoolDisabled,
+
+    #[msg("Exceeded max fee bps")]
+    ExceedMaxFeeBps,
+
+    #[msg("Invalid admin")]
+    InvalidAdmin,
+
+    #[msg("Amount is zero")]
+    AmountIsZero,
+
+    #[msg("Type cast error")]
+    TypeCastFailed,
+
+    #[msg("Unable to modify activation point")]
+    UnableToModifyActivationPoint,
+
+    #[msg("Invalid authority to create the pool")]
+    InvalidAuthorityToCreateThePool,
+
+    #[msg("Invalid activation type")]
+    InvalidActivationType,
+
+    #[msg("Invalid activation point")]
+    InvalidActivationPoint,
+
+    #[msg("Quote token must be SOL,USDC")]
+    InvalidQuoteMint,
+
+    #[msg("Invalid fee curve")]
+    InvalidFeeCurve,
+
+    #[msg("Invalid Price Range")]
+    InvalidPriceRange,
+
+    #[msg("Trade is over price range")]
+    PriceRangeViolation,
+
+    #[msg("Invalid parameters")]
+    InvalidParameters,
+
+    #[msg("Invalid collect fee mode")]
+    InvalidCollectFeeMode,
+
+    #[msg("Invalid input")]
+    InvalidInput,
+
+    #[msg("Cannot create token badge on supported mint")]
+    CannotCreateTokenBadgeOnSupportedMint,
+
+    #[msg("Invalid token badge")]
+    InvalidTokenBadge,
+
+    #[msg("Invalid minimum liquidity")]
+    InvalidMinimumLiquidity,
+
+    #[msg("Invalid vesting information")]
+    InvalidVestingInfo,
+
+    #[msg("Insufficient liquidity")]
+    InsufficientLiquidity,
+
+    #[msg("Invalid vesting account")]
+    InvalidVestingAccount,
+
+    #[msg("Invalid pool status")]
+    InvalidPoolStatus,
+
+    #[msg("Unsupported native mint token2022")]
+    UnsupportNativeMintToken2022,
+
+    #[msg("Invalid reward index")]
+    InvalidRewardIndex,
+
+    #[msg("Invalid reward duration")]
+    InvalidRewardDuration,
+
+    #[msg("Reward already initialized")]
+    RewardInitialized,
+
+    #[msg("Reward not initialized")]
+    RewardUninitialized,
+
+    #[msg("Invalid reward vault")]
+    InvalidRewardVault,
+
+    #[msg("Must withdraw ineligible reward")]
+    MustWithdrawnIneligibleReward,
+
+    #[msg("Reward duration is the same")]
+    IdenticalRewardDuration,
+
+    #[msg("Reward campaign in progress")]
+    RewardCampaignInProgress,
+
+    #[msg("Identical funder")]
+    IdenticalFunder,
+
+    #[msg("Invalid funder")]
+    InvalidFunder,
+
+    #[msg("Reward not ended")]
+    RewardNotEnded,
+
+    #[msg("Fee inverse is incorrect")]
+    FeeInverseIsIncorrect,
+
+    #[msg("Position is not empty")]
+    PositionIsNotEmpty,
+
+    #[msg("Invalid pool creator authority")]
+    InvalidPoolCreatorAuthority,
+
+    #[msg("Invalid config type")]
+    InvalidConfigType,
+
+    #[msg("Invalid pool creator")]
+    InvalidPoolCreator,
+
+    #[msg("Reward vault is frozen, must skip reward to proceed")]
+    RewardVaultFrozenSkipRequired,
+
+    #[msg("Invalid parameters for split position")]
+    InvalidSplitPositionParameters,
+
+    #[msg("Unsupported split position has vesting lock")]
+    UnsupportPositionHasVestingLock,
+
+    #[msg("Same position")]
+    SamePosition,
+
+    #[msg("Invalid base fee mode")]
+    InvalidBaseFeeMode,
+
+    #[msg("Invalid fee rate limiter")]
+    InvalidFeeRateLimiter,
+
+    #[msg("Fail to validate single swap instruction in rate limiter")]
+    FailToValidateSingleSwapInstruction,
+
+    #[msg("Invalid fee scheduler")]
+    InvalidFeeTimeScheduler,
+
+    #[msg("Undetermined error")]
+    UndeterminedError,
+
+    #[msg("Invalid pool version")]
+    InvalidPoolVersion,
+
+    #[msg("Invalid authority to do that action")]
+    InvalidAuthority,
+
+    #[msg("Invalid permission")]
+    InvalidPermission,
+
+    #[msg("Invalid fee market cap scheduler")]
+    InvalidFeeMarketCapScheduler,
+
+    #[msg("Cannot update base fee")]
+    CannotUpdateBaseFee,
+
+    #[msg("Invalid dynamic fee parameters")]
+    InvalidDynamicFeeParameters,
+
+    #[msg("Invalid update pool fees parameters")]
+    InvalidUpdatePoolFeesParameters,
+
+    #[msg("Missing operator account")]
+    MissingOperatorAccount,
+
+    #[msg("Incorrect ATA")]
+    IncorrectATA,
+
+    #[msg("Invalid zap out parameters")]
+    InvalidZapOutParameters,
+
+    #[msg("Invalid withdraw protocol fee zap accounts")]
+    InvalidWithdrawProtocolFeeZapAccounts,
+
+    #[msg("SOL,USDC protocol fee cannot be withdrawn via zap")]
+    MintRestrictedFromZap,
+
+    #[msg("CPI disabled")]
+    CpiDisabled,
+
+    #[msg("Missing zap out instruction")]
+    MissingZapOutInstruction,
+
+    #[msg("Invalid zap accounts")]
+    InvalidZapAccounts,
+
+    #[msg("Invalid compounding fee bps")]
+    InvalidCompoundingFeeBps,
+}
+
+impl From<ProtozolZapError> for PoolError {
+    fn from(e: ProtozolZapError) -> Self {
+        match e {
+            ProtozolZapError::MathOverflow => PoolError::MathOverflow,
+            ProtozolZapError::InvalidZapOutParameters => PoolError::InvalidZapOutParameters,
+            ProtozolZapError::TypeCastFailed => PoolError::TypeCastFailed,
+            ProtozolZapError::MissingZapOutInstruction => PoolError::MissingZapOutInstruction,
+            ProtozolZapError::InvalidWithdrawProtocolFeeZapAccounts => {
+                PoolError::InvalidWithdrawProtocolFeeZapAccounts
+            }
+            ProtozolZapError::MintRestrictedFromZap => PoolError::MintRestrictedFromZap,
+            ProtozolZapError::CpiDisabled => PoolError::CpiDisabled,
+            ProtozolZapError::InvalidZapAccounts => PoolError::InvalidZapAccounts,
+        }
+    }
+}

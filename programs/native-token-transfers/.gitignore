@@ -1,0 +1,39 @@
+# Compiler files
+cache/
+out/
+target/
+build/
+tsconfig.tsbuildinfo
+
+# Ignores development broadcast logs
+!/broadcast
+/broadcast/*/31337/
+/broadcast/**/dry-run/
+
+# Dotenv file
+.env
+
+# macOS stuff
+.DS_Store
+
+# VSCode
+.vscode
+
+# Misc
+.private
+
+# Node
+node_modules
+
+# Tilt
+.wormhole
+
+# Claude code
+.claude/settings.local.json
+docs/plans/
+
+# Echidna outputs
+crytic-export/
+corpus/
+# Bun lockb (binary format, we use text format bun.lock instead)
+*.lockb

@@ -1,0 +1,29 @@
+[package]
+name = "marginfi-type-crate"
+version = "0.1.8"
+edition = "2021"
+publish = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "marginfi_type_crate"
+
+[features]
+default = ["client"]
+client = []
+anchor = ["anchor-lang"]
+mainnet-beta = ["id-crate/mainnet-beta"]
+staging = ["id-crate/staging"]
+stagingalt = ["id-crate/stagingalt"]
+devnet = ["id-crate/devnet"]
+
+[dependencies]
+id-crate = { workspace = true }
+bytemuck = { workspace = true, features = ["derive"] }
+fixed = { workspace = true }
+fixed-macro = { workspace = true }
+bs58 = { workspace = true }
+static_assertions = { workspace = true }
+solana-instruction = { workspace = true }
+
+anchor-lang = { workspace = true, optional = true }

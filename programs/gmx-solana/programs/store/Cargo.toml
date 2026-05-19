@@ -1,0 +1,85 @@
+[package]
+name = "gmsol-store"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+description.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/gmsol-store"
+readme.workspace = true
+keywords.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "gmsol_store"
+
+[features]
+doc = ["cpi", "debug", "display", "utils", "serde", "enum-iter"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+anchor-debug = ["anchor-lang/anchor-debug"]
+debug-msg = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = [
+    "anchor-lang/idl-build",
+    "anchor-spl/idl-build",
+    "gmsol-utils/idl-build",
+]
+debug = ["derive_more/debug", "gmsol-utils/debug"]
+display = ["utils", "gmsol-utils/display"]
+utils = ["bytes", "bs58"]
+serde = ["dep:serde", "serde_with", "serde_bytes", "gmsol-utils/serde"]
+enum-iter = ["gmsol-utils/enum-iter"]
+migration = []
+mock = ["gmsol-chainlink-datastreams/mock"]
+multi-store = []
+devnet = ["gmsol-utils/devnet"]
+test-only = ["gmsol-callback/test-only"]
+no-competition = ["gmsol-callback/no-competition"]
+
+[dependencies]
+gmsol-model = { workspace = true, features = [
+    "u128",
+    "solana",
+    "strum",
+    "glv",
+] }
+gmsol-utils = { workspace = true, features = ["security-txt"] }
+gmsol-callback = { workspace = true, features = ["interface"] }
+gmsol-chainlink-datastreams = { workspace = true, features = ["gmsol"] }
+
+bytemuck = { workspace = true, features = ["min_const_generics"] }
+anchor-lang = { workspace = true, features = ["init-if-needed", "event-cpi"] }
+anchor-spl = { workspace = true, default-features = false, features = [
+    "token",
+    "token_2022",
+    "token_2022_extensions",
+    "associated_token",
+    "metadata",
+] }
+# chainlink_solana = { workspace = true }
+num_enum = { workspace = true }
+static_assertions = { workspace = true }
+clap = { workspace = true, optional = true }
+# pyth-sdk-solana = { workspace = true }
+switchboard-on-demand = { workspace = true, default-features = false }
+pyth-solana-receiver-sdk = { workspace = true }
+paste = { workspace = true }
+strum = { workspace = true, features = ["derive"] }
+serde = { workspace = true, features = ["derive"], optional = true }
+serde_with = { workspace = true, optional = true }
+serde_bytes = { workspace = true, optional = true }
+indexmap = { workspace = true }
+bytes = { workspace = true, optional = true }
+typed-builder = { workspace = true }
+bs58 = { workspace = true, optional = true }
+derive_more = { workspace = true, optional = true }
+rust_decimal = { workspace = true }
+cfg-if = { workspace = true }
+mpl-token-metadata = { workspace = true }
+
+[package.metadata.docs.rs]
+features = ["doc"]
+rustdoc-args = ["--cfg", "docsrs"]

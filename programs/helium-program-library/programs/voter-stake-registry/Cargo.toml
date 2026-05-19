@@ -1,0 +1,39 @@
+[package]
+name = "voter-stake-registry"
+version = "0.4.8"
+description = "Heliums voter weight plugin for spl-governance"
+license = "GPL-3.0-or-later"
+homepage = "https://github.com/helium/helium-program-library"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "voter_stake_registry"
+
+[features]
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+devnet = []
+no-genesis = []
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[profile.release]
+overflow-checks = true
+
+[dependencies]
+anchor-lang = { workspace = true }
+anchor-spl = { workspace = true }
+solana-zk-sdk = { workspace = true }
+bytemuck = "1.12.3"
+solana-program = { workspace = true }
+static_assertions = "1.1"
+mpl-token-metadata = { workspace = true }
+itertools = "0.10.2"
+modular-governance = { workspace = true }
+shared-utils = { workspace = true }
+solana-security-txt = { workspace = true }
+default-env = { workspace = true }
+

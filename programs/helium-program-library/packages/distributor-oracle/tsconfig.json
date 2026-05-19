@@ -1,0 +1,35 @@
+{
+  "extends": "../../tsconfig.root.json",
+  "references": [
+    {
+      "path": "../idls"
+    },
+    {
+      "path": "../spl-utils"
+    },
+    {
+      "path": "../account-fetch-cache"
+    },
+    {
+      "path": "../helium-entity-manager-sdk"
+    },
+    {
+      "path": "../lazy-distributor-sdk"
+    },
+    {
+      "path": "../rewards-oracle-sdk"
+    },
+    {
+      "path": "./tsconfig.cjs.json"
+    },
+    {
+      "path": "./tsconfig.esm.json"
+    }
+  ],
+  "ts-node": {
+    // these options are overrides used only by ts-node
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
+}

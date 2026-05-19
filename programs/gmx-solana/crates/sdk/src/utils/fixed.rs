@@ -1,0 +1,375 @@
+use crate::constants::MARKET_DECIMALS;
+use rust_decimal::Decimal;
+
+const MAX_REPR: u128 = 0x0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF;
+const TARGET_SCALE: u32 = MAX_REPR.ilog10() - 1;
+
+/// Convert signed USD value to [`Decimal`].
+///
+/// # Examples
+///
+/// ```
+/// use gmsol_sdk::utils::signed_value_to_decimal;
+/// use rust_decimal_macros::dec;
+///
+/// assert_eq!(
+///     signed_value_to_decimal(-429_663_361_044_608_151),
+///     dec!(-0.00429663361044608151),
+/// );
+/// ```
+pub fn signed_value_to_decimal(num: i128) -> Decimal {
+    signed_fixed_to_decimal(num, MARKET_DECIMALS).expect("must be `Some`")
+}
+
+/// Convert unsigned USD value to [`Decimal`].
+///
+/// # Examples
+///
+/// ```
+/// use gmsol_sdk::utils::unsigned_value_to_decimal;
+/// use rust_decimal_macros::dec;
+///
+/// assert_eq!(
+///     unsigned_value_to_decimal(429_663_361_044_608_151),
+///     dec!(0.00429663361044608151),
+/// );
+/// ```
+pub fn unsigned_value_to_decimal(num: u128) -> Decimal {
+    unsigned_fixed_to_decimal(num, MARKET_DECIMALS).expect("must be `Some`")
+}
+
+/// Convert unsigned fixed-point amount to [`Decimal`].
+///
+/// # Examples
+///
+/// ```
+/// use gmsol_sdk::utils::unsigned_amount_to_decimal;
+/// use rust_decimal_macros::dec;
+///
+/// assert_eq!(
+///     unsigned_amount_to_decimal(100_451_723_195, 6),
+///     dec!(100_451.723195),
+/// );
+/// ```
+pub fn unsigned_amount_to_decimal(mut num: u64, mut decimals: u8) -> Decimal {
+    const MAX_DECIMALS: u8 = 28;
+    const MAX_SCALE_FOR_U64: u8 = 19;
+
+    if decimals > MAX_DECIMALS {
+        let scale_diff = decimals - MAX_DECIMALS;
+        if scale_diff > MAX_SCALE_FOR_U64 {
+            return Decimal::ZERO;
+        }
+        num /= 10u64.pow(scale_diff as u32);
+        decimals = MAX_DECIMALS;
+    }
+
+    unsigned_fixed_to_decimal(num as u128, decimals).expect("must be `Some`")
+}
+
+/// Convert signed fixed-point amount to [`Decimal`].
+///
+/// # Examples
+///
+/// ```
+/// use gmsol_sdk::utils::signed_amount_to_decimal;
+/// use rust_decimal_macros::dec;
+///
+/// assert_eq!(
+///     signed_amount_to_decimal(-100_451_723_195, 6),
+///     dec!(-100_451.723195),
+/// );
+/// ```
+pub fn signed_amount_to_decimal(num: i64, decimals: u8) -> Decimal {
+    let is_negative = num.is_negative();
+    let d = unsigned_amount_to_decimal(num.unsigned_abs(), decimals);
+    if is_negative {
+        -d
+    } else {
+        d
+    }
+}
+
+/// Convert unsigned fixed-point number to [`Decimal`].
+///
+/// Returns `None` if it cannot be represented as a [`Decimal`].
+///
+/// # Examples
+///
+/// ```
+/// use gmsol_sdk::utils::unsigned_fixed_to_decimal;
+/// use rust_decimal_macros::dec;
+///
+/// assert_eq!(
+///     unsigned_fixed_to_decimal(100_451_723_195, 6),
+///     Some(dec!(100_451.723195)),
+/// );
+///
+/// assert_eq!(
+///     unsigned_fixed_to_decimal(u128::MAX, 10),
+///     None,
+/// );
+/// ```
+pub fn unsigned_fixed_to_decimal(num: u128, decimals: u8) -> Option<Decimal> {
+    fn convert_by_change_the_scale(mut num: u128, scale: u32) -> Option<Decimal> {
+        let digits = num.ilog10();
+        debug_assert!(digits >= TARGET_SCALE);
+        let scale_diff = digits - TARGET_SCALE;
+        if scale < scale_diff {
+            return None;
+        }
+        num /= 10u128.pow(scale_diff);
+        Some(Decimal::from_i128_with_scale(
+            num as i128,
+            scale - scale_diff,
+        ))
+    }
+
+    let scale = decimals as u32;
+    if num > MAX_REPR {
+        convert_by_change_the_scale(num, scale)
+    } else {
+        Decimal::try_from_i128_with_scale(num as i128, scale).ok()
+    }
+}
+
+/// Convert signed fixed-point value to [`Decimal`].
+///
+/// Returns `None` if it cannot be represented as a [`Decimal`].
+///
+/// # Examples
+///
+/// ```
+/// use gmsol_sdk::utils::signed_fixed_to_decimal;
+/// use rust_decimal_macros::dec;
+///
+/// assert_eq!(
+///     signed_fixed_to_decimal(-100_451_723_195, 6),
+///     Some(dec!(-100_451.723195)),
+/// );
+///
+/// assert_eq!(
+///     signed_fixed_to_decimal(i128::MIN, 10),
+///     None,
+/// );
+/// ```
+pub fn signed_fixed_to_decimal(num: i128, decimals: u8) -> Option<Decimal> {
+    let is_negative = num.is_negative();
+    let d = unsigned_fixed_to_decimal(num.unsigned_abs(), decimals)?;
+    if is_negative {
+        Some(-d)
+    } else {
+        Some(d)
+    }
+}
+
+/// Rescale and return the mantissa, compensating for any truncation
+/// that `Decimal::rescale` may silently introduce.
+///
+/// When `rescale` cannot reach the target scale (because the mantissa is too
+/// large for `Decimal`'s internal 96-bit representation), the actual scale
+/// will be smaller than requested. In that case we multiply the mantissa by
+/// `10^(target_scale - actual_scale)` to produce the correct fixed-point value.
+fn rescale_to_mantissa(mut value: rust_decimal::Decimal, decimals: u8) -> crate::Result<i128> {
+    use std::cmp::Ordering;
+    let decimals = u32::from(decimals);
+    value.rescale(decimals);
+    let scale = value.scale();
+    let mantissa = value.mantissa();
+    match scale.cmp(&decimals) {
+        Ordering::Less => 10i128
+            .checked_pow(decimals - scale)
+            .and_then(|m| mantissa.checked_mul(m))
+            .ok_or_else(|| {
+                crate::Error::custom(format!(
+                    "`value` is too big: value={value}, decimals={decimals}"
+                ))
+            }),
+        Ordering::Equal => Ok(mantissa),
+        Ordering::Greater => Err(crate::Error::custom(format!(
+            "invalid scale: value={value}, decimals={decimals}"
+        ))),
+    }
+}
+
+/// Convert a [`Decimal`] to `u64` amount.
+pub fn decimal_to_amount(amount: rust_decimal::Decimal, decimals: u8) -> crate::Result<u64> {
+    rescale_to_mantissa(amount, decimals)?
+        .try_into()
+        .map_err(crate::Error::custom)
+}
+
+/// Convert a [`Decimal`] to `i128` value.
+pub fn decimal_to_signed_value(amount: rust_decimal::Decimal, decimals: u8) -> crate::Result<i128> {
+    rescale_to_mantissa(amount, decimals)
+}
+
+/// Convert a [`Decimal`] to `u128` value.
+pub fn decimal_to_value(amount: rust_decimal::Decimal, decimals: u8) -> crate::Result<u128> {
+    decimal_to_signed_value(amount, decimals)?
+        .try_into()
+        .map_err(crate::Error::custom)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rust_decimal_macros::dec;
+
+    #[test]
+    fn test_convert_value_to_decimal() {
+        assert_eq!(
+            signed_value_to_decimal(2_268_944_690_310_400_000_000_000),
+            dec!(22689.446903104)
+        );
+        assert_eq!(
+            signed_value_to_decimal(i128::MAX),
+            dec!(1701411834604692317.316873037),
+        );
+        assert_eq!(
+            signed_value_to_decimal(i128::MIN),
+            dec!(-1701411834604692317.316873037)
+        );
+        assert_eq!(
+            signed_value_to_decimal(0x0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF),
+            dec!(792281625.14264337593543950335),
+        );
+
+        assert_eq!(
+            unsigned_value_to_decimal(u128::MAX),
+            dec!(3402823669209384634.633746074),
+        );
+        assert_eq!(
+            unsigned_value_to_decimal(0x0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF),
+            dec!(792281625.14264337593543950335),
+        );
+    }
+
+    #[test]
+    fn test_convert_signed_amount_to_decimal() {
+        assert_eq!(
+            signed_amount_to_decimal(-2_649_941_038_310_943, 6),
+            dec!(-2649941038.310943),
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(i64::MAX, 0),
+            dec!(9223372036854775807),
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(i64::MIN, 0),
+            dec!(-9223372036854775808),
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(1, 28),
+            dec!(0.0000000000000000000000000001),
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(-1, 28),
+            dec!(-0.0000000000000000000000000001),
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(i64::MAX, 29),
+            dec!(0.000000000092233720368547758)
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(i64::MIN, 29),
+            dec!(-0.000000000092233720368547758),
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(i64::MAX, 46),
+            dec!(0.0000000000000000000000000009),
+        );
+
+        assert_eq!(
+            signed_amount_to_decimal(i64::MIN, 46),
+            dec!(-0.0000000000000000000000000009),
+        );
+
+        assert_eq!(signed_amount_to_decimal(i64::MAX, 47), Decimal::ZERO);
+
+        assert_eq!(signed_amount_to_decimal(i64::MIN, 47), Decimal::ZERO);
+    }
+
+    #[test]
+    fn test_convert_unsigned_amount_to_decimal() {
+        assert_eq!(
+            unsigned_amount_to_decimal(2_649_941_038_310_943, 6),
+            dec!(2649941038.310943),
+        );
+
+        assert_eq!(
+            unsigned_amount_to_decimal(u64::MAX, 0),
+            dec!(18446744073709551615),
+        );
+
+        assert_eq!(
+            unsigned_amount_to_decimal(u64::MAX, 29),
+            dec!(0.0000000001844674407370955161),
+        );
+
+        assert_eq!(
+            unsigned_amount_to_decimal(u64::MAX, 47),
+            dec!(0.0000000000000000000000000001)
+        );
+
+        assert_eq!(unsigned_amount_to_decimal(u64::MAX, 48), Decimal::ZERO);
+    }
+
+    #[test]
+    fn test_rescale_truncation_is_compensated() {
+        // dec!(1234567891).rescale(20) => scale=19 (truncated by 1)
+        // Compensated: mantissa * 10^1 = 1234567891 * 10^20
+        let expected = 123_456_789_100_000_000_000_000_000_000i128;
+        assert_eq!(
+            decimal_to_signed_value(dec!(1234567891), 20).unwrap(),
+            expected,
+        );
+        assert_eq!(
+            decimal_to_value(dec!(1234567891), 20).unwrap(),
+            expected as u128,
+        );
+        // The compensated value exceeds u64::MAX, so decimal_to_amount fails.
+        assert!(decimal_to_amount(dec!(1234567891), 20).is_err());
+    }
+
+    #[test]
+    fn test_rescale_compensation_overflow() {
+        // dec!(1234567891) with decimals=30 triggers truncation compensation
+        // that overflows i128 (1234567891 * 10^30 > i128::MAX).
+        assert!(decimal_to_signed_value(dec!(1234567891), 30).is_err());
+    }
+
+    #[test]
+    fn test_rescale_large_decimals_returns_error() {
+        // decimals=255 (u8::MAX) must return Err, not panic from pow overflow.
+        assert!(decimal_to_signed_value(dec!(1), u8::MAX).is_err());
+        assert!(decimal_to_amount(dec!(1), u8::MAX).is_err());
+        assert!(decimal_to_value(dec!(1), u8::MAX).is_err());
+    }
+
+    #[test]
+    fn test_rescale_no_truncation() {
+        assert_eq!(decimal_to_signed_value(dec!(1.5), 6).unwrap(), 1_500_000);
+        assert_eq!(decimal_to_amount(dec!(1.5), 6).unwrap(), 1_500_000u64);
+        assert_eq!(decimal_to_value(dec!(1.5), 6).unwrap(), 1_500_000u128);
+    }
+
+    #[test]
+    fn test_decimal_to_value_rejects_negative() {
+        assert!(decimal_to_value(dec!(-1.5), 6).is_err());
+    }
+
+    #[test]
+    fn test_zero_with_large_decimals() {
+        assert!(decimal_to_signed_value(Decimal::ZERO, u8::MAX).is_err());
+        assert!(decimal_to_amount(Decimal::ZERO, u8::MAX).is_err());
+        assert!(decimal_to_value(Decimal::ZERO, u8::MAX).is_err());
+    }
+}

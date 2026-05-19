@@ -1,0 +1,6 @@
+keypair.bin
+.env
+.env.local
+settings.toml
+target
+local.toml

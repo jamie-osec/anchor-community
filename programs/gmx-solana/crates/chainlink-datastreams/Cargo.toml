@@ -1,0 +1,29 @@
+[package]
+name = "gmsol-chainlink-datastreams"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+description.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/gmsol-chainlink-datastreams"
+readme.workspace = true
+
+[features]
+mock = []
+gmsol = ["gmsol-utils"]
+
+[dependencies]
+gmsol-utils = { workspace = true, optional = true }
+
+ruint = { workspace = true, default-features = false }
+hex = { workspace = true }
+gmsol-mock-chainlink-verifier = { workspace = true, features = ["cpi"] }
+anchor-lang = { workspace = true }
+thiserror = { workspace = true }
+snap = { workspace = true }
+chainlink-data-streams-report = { workspace = true }
+num-bigint = { workspace = true }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

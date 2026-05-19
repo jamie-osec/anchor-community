@@ -1,0 +1,45 @@
+[package]
+name = "gmsol-model"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+description.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/gmsol-model"
+readme.workspace = true
+keywords.workspace = true
+
+[features]
+test = []
+u128 = ["ruint"]
+solana = ["anchor-lang", "borsh", "gmsol-utils"]
+strum = ["dep:strum"]
+serde = ["dep:serde"]
+js = ["tsify-next", "serde", "wasm-bindgen"]
+glv = []
+
+[dependencies]
+gmsol-utils = { workspace = true, optional = true }
+
+num-traits = { workspace = true }
+thiserror = { workspace = true }
+ruint = { workspace = true, optional = true, default-features = false }
+rust_decimal = { workspace = true, default-features = false, features = [
+    "maths",
+] }
+anchor-lang = { workspace = true, optional = true }
+num_enum = { workspace = true }
+typed-builder = { workspace = true }
+strum = { workspace = true, optional = true, features = ["derive"] }
+serde = { workspace = true, optional = true, features = ["derive"] }
+borsh = { workspace = true, optional = true }
+
+tsify-next = { workspace = true, optional = true, features = ["js"] }
+wasm-bindgen = { workspace = true, optional = true }
+
+[dev-dependencies]
+gmsol-model = { path = ".", features = ["test", "u128"] }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

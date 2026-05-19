@@ -1,0 +1,294 @@
+[
+  {
+    "name": "Kamino Finance / klend",
+    "source": "https://github.com/Kamino-Finance/klend",
+    "commit": "4c7653a12276ded3bcaf95a3474973ca135ca810",
+    "directory": "klend",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "target",
+      "libs/klend-interface/docs"
+    ]
+  },
+  {
+    "name": "Orca / whirlpools",
+    "source": "https://github.com/orca-so/whirlpools",
+    "commit": "a119d79bada4e730fef791cac6adb669405a21de",
+    "directory": "whirlpools",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      ".audits",
+      "docs",
+      "rust-sdk",
+      "legacy-sdk",
+      "target",
+      "ts-sdk",
+      "examples/rust-sdk",
+      "examples/ts-sdk",
+      ".yarn/releases/yarn-4.13.0.cjs",
+      "programs/whirlpool/src/tests/swap_test_cases.json",
+      "programs/whirlpool/src/tests/swap_test_cases_splash_pool.json"
+    ]
+  },
+  {
+    "name": "Drift Labs / protocol-v2",
+    "source": "https://github.com/drift-labs/protocol-v2",
+    "commit": "0ae3e3b1db782a6765c3525b3dec38ad4d9d3a62",
+    "directory": "protocol-v2",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "sdk",
+      "target",
+      "tests/phoenixTestAccountData.ts",
+      "tests/fixtures/openbook.so",
+      "tests/fixtures/phoenix_dex.so",
+      "tests/fixtures/pyth_solana_receiver.so",
+      "tests/fixtures/serum_dex.so",
+      "tests/fixtures/spl_transfer_hook_example.so",
+      "tests/fixtures/token_2022.so",
+      "tests/fixtures/token_2022_test.so"
+    ]
+  },
+  {
+    "name": "Project Zero / marginfi-v2",
+    "source": "https://github.com/0dotxyz/marginfi-v2",
+    "commit": "843aa82df852b9e9a3c555e67ffd12aa53f4805b",
+    "directory": "marginfi-v2",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "audits",
+      "target",
+      "tests/fixtures/drift.so",
+      "tests/fixtures/juplend_lending.so",
+      "tests/fixtures/juplend_liquidity.so",
+      "tests/fixtures/juplend_rewards_rate_model.so",
+      "tests/fixtures/kamino_farms.so",
+      "tests/fixtures/kamino_lending.so",
+      "tests/fixtures/kamino_lending_nocpi.so",
+      "tests/fixtures/solend.so",
+      "tests/fixtures/spl_single_pool.so",
+      "tests/fixtures/token_metadata.so",
+      "tests/utils/solend-sdk"
+    ]
+  },
+  {
+    "name": "Raydium / raydium-clmm",
+    "source": "https://github.com/raydium-io/raydium-clmm",
+    "commit": "a0c0c181dfc759a1012e8e6172cc56516c9d57bc",
+    "directory": "raydium-clmm",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "target"
+    ]
+  },
+  {
+    "name": "Raydium / raydium-cp-swap",
+    "source": "https://github.com/raydium-io/raydium-cp-swap",
+    "commit": "609780f165d234a0aa9699cac90178a3fa36fd43",
+    "directory": "raydium-cp-swap",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "target"
+    ]
+  },
+  {
+    "name": "Meteora / damm-v2",
+    "source": "https://github.com/MeteoraAg/damm-v2",
+    "commit": "58a13fcf45516a9f27f2bd2a2056fb66673454e0",
+    "directory": "damm-v2",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "target",
+      "tests/fixtures/alpha_vault.so",
+      "tests/fixtures/jupiter.so",
+      "tests/fixtures/transfer_hook_counter.so",
+      "tests/fixtures/zap.so"
+    ]
+  },
+  {
+    "name": "Meteora / dynamic-bonding-curve",
+    "source": "https://github.com/MeteoraAg/dynamic-bonding-curve",
+    "commit": "b4f954733f0e88258f1eb3f0eff75e4314c9610c",
+    "directory": "dynamic-bonding-curve",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "clients",
+      "rust-sdk",
+      "target",
+      "tests/fixtures/amm.so",
+      "tests/fixtures/damm_v2.so",
+      "tests/fixtures/jupiter.so",
+      "tests/fixtures/locker.so",
+      "tests/fixtures/metaplex.so",
+      "tests/fixtures/vault.so",
+      "tests/fixtures/zap.so"
+    ]
+  },
+  {
+    "name": "Marinade Finance / liquid-staking-program",
+    "source": "https://github.com/marinade-finance/liquid-staking-program",
+    "commit": "26147376b75d8c971963da458623e646f2795e15",
+    "directory": "liquid-staking-program",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "target"
+    ]
+  },
+  {
+    "name": "Jito Foundation / stakenet",
+    "source": "https://github.com/jito-foundation/stakenet",
+    "commit": "0a708371f5859dabe5df0902dfc565add7282007",
+    "directory": "stakenet",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "docs",
+      "security-audits",
+      "target",
+      "tests/tests/fixtures/jito_priority_fee_distribution.so",
+      "tests/tests/fixtures/jito_tip_distribution.so",
+      "tests/tests/fixtures/spl_stake_pool.so"
+    ]
+  },
+  {
+    "name": "blockworks-foundation / mango-v4",
+    "source": "https://github.com/blockworks-foundation/mango-v4",
+    "commit": "ee671d24bb4f9386adc2d146f5180d4760838222",
+    "directory": "mango-v4",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "audits",
+      "docs",
+      "target",
+      "ts/client",
+      "ts/sdk",
+      "programs/mango-v4/tests/fixtures/margin_trade.so",
+      "programs/mango-v4/tests/fixtures/serum_dex.so"
+    ]
+  },
+  {
+    "name": "gmsol-labs / gmx-solana",
+    "source": "https://github.com/gmsol-labs/gmx-solana",
+    "commit": "1156514934791a22fb5576799f3b8912de67a12e",
+    "directory": "gmx-solana",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "docs",
+      "target",
+      "external-programs/chainlink-store.so",
+      "external-programs/pyth-push-oracle.so",
+      "external-programs/pyth-receiver.so",
+      "external-programs/wormhole.so",
+      "crates/programs/idls"
+    ]
+  },
+  {
+    "name": "openbook-dex / openbook-v2",
+    "source": "https://github.com/openbook-dex/openbook-v2",
+    "commit": "f3e17421e675b083b584867594bf3cf4f675d156",
+    "directory": "openbook-v2",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "audit",
+      "target"
+    ]
+  },
+  {
+    "name": "ONRE / onre-sol",
+    "source": "https://github.com/onre-finance/onre-sol",
+    "commit": "361cd588ba48b89a44236801140cdc2b5d110251",
+    "directory": "onre-sol",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "docs",
+      "target"
+    ]
+  },
+  {
+    "name": "Helium / helium-program-library",
+    "source": "https://github.com/helium/helium-program-library",
+    "commit": "3fa2a7c3f0405f90440f599f8d288361b6a2a2f3",
+    "directory": "helium-program-library",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "docs",
+      "docsite",
+      "target",
+      "packages/circuit-breaker-sdk",
+      "packages/data-credits-sdk",
+      "packages/dc-auto-top-sdk",
+      "packages/docsite",
+      "packages/fanout-sdk",
+      "packages/helium-entity-manager-sdk",
+      "packages/helium-sub-daos-sdk",
+      "packages/hexboosting-sdk",
+      "packages/hpl-crons-sdk",
+      "packages/lazy-distributor-sdk",
+      "packages/lazy-transactions-sdk",
+      "packages/mini-fanout-sdk",
+      "packages/mobile-entity-manager-sdk",
+      "packages/no-emit-sdk",
+      "packages/price-oracle-sdk",
+      "packages/rewards-oracle-sdk",
+      "packages/treasury-management-sdk",
+      "packages/tuktuk-dca-sdk",
+      "packages/voter-stake-registry-sdk",
+      "packages/welcome-pack-sdk",
+      "packages/blockchain-api/init-scripts/00-reverse-geo-cache.sql",
+      "packages/voter-stake-registry-hooks/src/sdk",
+      "packages/account-postgres-sink-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/asset-ownership-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/blockchain-api/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/crons/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/distributor-oracle/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/entity-invalidator/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/fanout-metadata-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/faucet-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/helium-vote-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/metadata-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/monitor-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/recent-helium-transactions-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/rewards-oracle-faucet-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/tokens-to-rent-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/tuktuk-dca-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/tuktuk-pyth-service/.yarn/releases/yarn-3.6.4.cjs",
+      "packages/vsr-metadata-service/.yarn/releases/yarn-3.6.4.cjs"
+    ]
+  },
+  {
+    "name": "Wormhole / native-token-transfers",
+    "source": "https://github.com/wormhole-foundation/native-token-transfers",
+    "commit": "3fb0fc97b65246167de14bcdaaf3c4eadba8927b",
+    "directory": "native-token-transfers",
+    "build_command": "cd solana && anchor build --ignore-keys",
+    "ignored": [
+      "audits",
+      "docs",
+      "images",
+      "sdk",
+      "target",
+      "solana/target",
+      "evm/lib/wormhole-solidity-sdk",
+      "solana/tilt/bridge.so",
+      "solana/tilt/wormhole_post_message_shim.so",
+      "solana/tilt/wormhole_verify_vaa_shim.so",
+      "solana/ts/sdk",
+      "solana/tests/fixtures/mainnet_core_bridge.so",
+      "solana/tests/fixtures/mainnet_wormhole_post_message_shim.so",
+      "solana/tests/fixtures/mainnet_wormhole_verify_vaa_shim.so",
+      "solana/tests/accounts/testnet/testnet_core_bridge.so",
+      "solana/tests/cargo/src/sdk"
+    ]
+  },
+  {
+    "name": "Squads Protocol / v4",
+    "source": "https://github.com/Squads-Protocol/v4",
+    "commit": "edbca83427b10cbe58bf65fc9b597e8eb7b17cc1",
+    "directory": "v4",
+    "build_command": "anchor build --ignore-keys",
+    "ignored": [
+      "app",
+      "audits",
+      "target"
+    ]
+  }
+]

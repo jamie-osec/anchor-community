@@ -1,0 +1,360 @@
+name: main
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master, devnet]
+
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_TOOLCHAIN: 1.70.0
+  SOLANA_VERSION: "1.16.27"
+
+jobs:
+  fmt-clippy:
+    name: fmt & clippy
+    runs-on: ubicloud
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust nightly
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          profile: minimal
+          override: true
+          components: rustfmt, clippy
+      - name: Cache build files
+        uses: Swatinem/rust-cache@v1
+      - name: Cargo fmt
+        run: cargo fmt -- --check
+      - name: Cargo clippy
+        run: cargo clippy -p drift
+  unit:
+    name: Unit tests
+    runs-on: ubicloud
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          profile: minimal
+          override: true
+      - name: Cache build artefacts
+        uses: Swatinem/rust-cache@v1
+      - name: Run package checks
+        run: cargo check # run package checks
+      - name: Run unit tests
+        run: cargo test --lib # run unit tests
+# disable until solana-client is upgraded
+#  cargo-audit:
+#    name: Cargo audit
+#    runs-on: ubicloud
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Cache cargo-audit version
+#        uses: Swatinem/rust-cache@v1
+#      - name: Download cargo-audit
+#        uses: actions-rs/install@v0.1
+#        with:
+#          crate: cargo-audit
+#          version: latest
+#      - name: Run cargo-audit # Using args from .cargo/audit.toml
+#        run: cargo audit
+  yarn-prettier:
+    runs-on: ubicloud
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "24.x.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: Install yarn
+        run: yarn
+      - name: Print prettier version
+        run: npx prettier --version
+      - name: Run prettier
+        run: yarn prettify
+  yarn-lint:
+    runs-on: ubicloud
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "24.x.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: Install yarn
+        run: yarn
+      - name: Run lint
+        run: yarn lint
+  anchor-tests:
+    name: Anchor tests
+    runs-on: ubicloud
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          profile: minimal
+          override: true
+      - name: Cache build artefacts
+        uses: Swatinem/rust-cache@v1
+        with:
+          cache-on-failure: "true"
+
+      - uses: ./.github/actions/setup-solana/
+
+      - name: Cache Anchor CLI
+        id: cache-anchor
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/anchor
+          key: ${{ runner.os }}-anchor-cli-0.29.0
+
+      - name: Install Anchor CLI
+        if: steps.cache-anchor.outputs.cache-hit != 'true'
+        run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.29.0 anchor-cli --locked
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "24.x.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Setup yarn
+        run: npm install -g yarn
+
+      - name: Install yarn
+        run: yarn
+
+      - name: install typescript
+        run: npm install typescript@5.4.5 -g
+
+      - name: install mocha
+        run: |
+          npm install ts-mocha@10.0.0 -g
+          npm install --global mocha
+
+      - name: build sdk
+        run: cd sdk/ && yarn && yarn build && cd ..
+
+      - name: run anchor tests
+        env:
+          RUST_LOG: solana_runtime::message_processor::stable_log=info
+        run: bash test-scripts/run-anchor-tests.sh
+  verify-sdk-configs:
+    name: Verify SDK Configs
+    runs-on: ubicloud
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "24.x.x"
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: |
+          npm install -g yarn
+          yarn install
+
+      - name: Build SDK
+        run: |
+          cd sdk/
+          yarn install
+          yarn build
+          cd ..
+
+      - name: Install ts-mocha and typescript
+        run: |
+          npm install -g ts-mocha
+          npm install typescript@5.4.5 -g
+
+      - name: Run tests
+        env:
+          MAINNET_RPC_ENDPOINT: ${{ secrets.MAINNET_RPC_ENDPOINT }}
+          DEVNET_RPC_ENDPOINT: ${{ secrets.DEVNET_RPC_ENDPOINT }}
+        run: ts-mocha ./sdk/tests/ci/*
+
+
+  check-for-sdk-changes:
+    runs-on: ubicloud
+    # Set job outputs to values from filter step
+    outputs:
+      sdk: ${{ steps.filter.outputs.sdk }}
+    steps:
+      # For pull requests it's not necessary to checkout the code
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            sdk:
+              - 'sdk/**'
+  release:
+    runs-on: ubicloud
+    needs:
+      [
+        fmt-clippy,
+        unit,
+#        cargo-audit,
+        yarn-prettier,
+        yarn-lint,
+        check-for-sdk-changes,
+      ]
+    if: ${{ github.ref == 'refs/heads/master' && needs.check-for-sdk-changes.outputs.sdk == 'true' }}
+    defaults:
+      run:
+        working-directory: ./sdk
+    outputs:
+      version: ${{ steps.git-commit.outputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "24.x.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: Build sdk
+        run: yarn
+      - run: yarn build
+      - name: Update package version
+        run: |
+          VERSION=$(node -e "console.log(require('./package.json').version);")
+          [[ "$VERSION" == *beta* ]] && npm version prerelease --preid=beta || npm version preminor --preid=beta
+          echo "PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version);")" >> $GITHUB_ENV
+      - name: Git commit
+        id: git-commit
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add ..
+          git commit -a -m "sdk: release v$PACKAGE_VERSION"
+          git pull --rebase origin master
+          git push origin HEAD || {
+            echo "Push failed. Retrying after pulling latest changes..."
+            git pull --rebase origin master
+            git push origin HEAD
+          }
+          echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+      - name: Publish to npm
+        run: |
+          if [[ "$PACKAGE_VERSION" == *beta* ]]; then
+            npm publish --access=public --tag latest
+          elif [[ "$PACKAGE_VERSION" == *alpha* ]]; then
+            npm publish --access=public --tag alpha
+          else
+            npm publish --access=public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Build sdk for browser
+        run: |
+          yarn
+          yarn build:browser
+          # Update package name for browser version while keeping the same version
+          node -e "const pkg = require('./package.json'); pkg.name = pkg.name + '-browser'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
+      - name: Publish browser version to npm
+        run: |
+          if [[ "$PACKAGE_VERSION" == *beta* ]]; then
+            npm publish --access=public --tag beta
+          elif [[ "$PACKAGE_VERSION" == *alpha* ]]; then
+            npm publish --access=public --tag alpha
+          else
+            npm publish --access=public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: '#code-review'
+          slack-message: '<!here> ❌ Deployment failed! Check the logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+  emit-dispatch-events:
+    runs-on: ubicloud
+    needs: [release, check-for-sdk-changes]
+    if: ${{ github.ref == 'refs/heads/master' && needs.check-for-sdk-changes.outputs.sdk == 'true' }}
+    strategy:
+      matrix:
+        repo:
+          [
+            "jit-proxy",
+            "dlob-server",
+            "drift-vaults",
+            "drift-common",
+            "drift-ffi-sys",
+            "drift-rs",
+            "swift"
+          ]
+    steps:
+      - name: Checkout code with new updated version
+        uses: actions/checkout@v2
+      - name: Emit dispatch event
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token ${{ secrets.GH_PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/drift-labs/${{ matrix.repo }}/dispatches" \
+            -d "{\"event_type\": \"sdk-update\", \"client_payload\": {
+              \"version\": \"$VERSION\"
+            }}"
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          VERSION: ${{ needs.release.outputs.version }}
+        working-directory: ./sdk
+  check-for-program-version-changes:
+    runs-on: ubicloud
+    # Set job outputs to values from filter step
+    outputs:
+      program: ${{ steps.filter.outputs.program }}
+    steps:
+      # For pull requests it's not necessary to checkout the code
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            program:
+              - 'programs/drift/Cargo.toml'
+  verified-build:
+    name: Build Verifiable Artifact
+    runs-on: ubicloud
+    needs:
+      [
+          check-for-program-version-changes,
+      ]
+    if: ${{ needs.check-for-program-version-changes.outputs.program == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Solana Verify
+        run: |
+          cargo install --version 0.2.13 solana-verify
+          solana-verify --version
+
+      - name: Verifiable Build
+        run: |
+          solana-verify build --library-name drift --base-image ellipsislabs/solana:1.16.6
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: target/deploy/drift.so

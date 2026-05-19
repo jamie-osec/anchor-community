@@ -1,0 +1,31 @@
+name: "Setup ts"
+description: "Setup ts"
+runs:
+  using: "composite"
+  steps:
+    - uses: pnpm/action-setup@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: Get pnpm store directory
+      shell: bash
+      run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+    - uses: actions/cache@v4
+      name: Cache pnpm store
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: pnpm-store-${{ runner.os }}-${{ hashFiles('./pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-store-${{ runner.os }}-
+    - uses: actions/cache@v4
+      name: Cache turbo build outputs
+      with:
+        path: .turbo
+        key: turbo-${{ runner.os }}-${{ github.sha }}
+        restore-keys: |
+          turbo-${{ runner.os }}-
+    - run: pnpm install --frozen-lockfile
+      shell: bash
+    - name: Build packages (skip apps that need runtime env vars)
+      run: pnpm turbo run build --filter='!@helium/blockchain-api-service' --filter='!hpl-docs'
+      shell: bash

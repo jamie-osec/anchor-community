@@ -1,0 +1,1364 @@
+{
+  "address": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+  "metadata": {
+    "name": "kamino_lending",
+    "version": "1.14.0",
+    "spec": "0.1.0",
+    "address": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD"
+  },
+  "instructions": [
+    {
+      "name": "refresh_reserve",
+      "discriminator": [
+        2,
+        218,
+        138,
+        235,
+        79,
+        201,
+        25,
+        102
+      ],
+      "accounts": [
+        {
+          "name": "reserve",
+          "writable": true
+        },
+        {
+          "name": "lending_market"
+        },
+        {
+          "name": "pyth_oracle",
+          "optional": true
+        },
+        {
+          "name": "switchboard_price_oracle",
+          "optional": true
+        },
+        {
+          "name": "switchboard_twap_oracle",
+          "optional": true
+        },
+        {
+          "name": "scope_prices",
+          "optional": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "init_obligation",
+      "discriminator": [
+        251,
+        10,
+        231,
+        76,
+        27,
+        11,
+        159,
+        96
+      ],
+      "accounts": [
+        {
+          "name": "obligation_owner",
+          "signer": true
+        },
+        {
+          "name": "fee_payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "obligation",
+          "writable": true
+        },
+        {
+          "name": "lending_market"
+        },
+        {
+          "name": "seed1_account"
+        },
+        {
+          "name": "seed2_account"
+        },
+        {
+          "name": "owner_user_metadata"
+        },
+        {
+          "name": "rent"
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "InitObligationArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "init_obligation_farms_for_reserve",
+      "discriminator": [
+        136,
+        63,
+        15,
+        186,
+        211,
+        152,
+        168,
+        164
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner"
+        },
+        {
+          "name": "obligation",
+          "writable": true
+        },
+        {
+          "name": "lending_market_authority"
+        },
+        {
+          "name": "reserve",
+          "writable": true
+        },
+        {
+          "name": "reserve_farm_state",
+          "writable": true
+        },
+        {
+          "name": "obligation_farm",
+          "writable": true
+        },
+        {
+          "name": "lending_market"
+        },
+        {
+          "name": "farms_program"
+        },
+        {
+          "name": "rent"
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "mode",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "refresh_obligation",
+      "discriminator": [
+        33,
+        132,
+        147,
+        228,
+        151,
+        192,
+        72,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "lending_market"
+        },
+        {
+          "name": "obligation",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit_reserve_liquidity_and_obligation_collateral",
+      "discriminator": [
+        129,
+        199,
+        4,
+        2,
+        222,
+        39,
+        26,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "obligation",
+          "writable": true
+        },
+        {
+          "name": "lending_market"
+        },
+        {
+          "name": "lending_market_authority"
+        },
+        {
+          "name": "reserve",
+          "writable": true
+        },
+        {
+          "name": "reserve_liquidity_mint"
+        },
+        {
+          "name": "reserve_liquidity_supply",
+          "writable": true
+        },
+        {
+          "name": "reserve_collateral_mint",
+          "writable": true
+        },
+        {
+          "name": "reserve_destination_deposit_collateral",
+          "writable": true
+        },
+        {
+          "name": "user_source_liquidity",
+          "writable": true
+        },
+        {
+          "name": "placeholder_user_destination_collateral",
+          "optional": true
+        },
+        {
+          "name": "collateral_token_program"
+        },
+        {
+          "name": "liquidity_token_program"
+        },
+        {
+          "name": "instruction_sysvar_account"
+        }
+      ],
+      "args": [
+        {
+          "name": "liquidity_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_reserve_liquidity_and_obligation_collateral_v2",
+      "discriminator": [
+        216,
+        224,
+        191,
+        27,
+        204,
+        151,
+        102,
+        175
+      ],
+      "accounts": [
+        {
+          "name": "deposit_accounts",
+          "accounts": [
+            {
+              "name": "owner",
+              "writable": true,
+              "signer": true
+            },
+            {
+              "name": "obligation",
+              "writable": true
+            },
+            {
+              "name": "lending_market"
+            },
+            {
+              "name": "lending_market_authority"
+            },
+            {
+              "name": "reserve",
+              "writable": true
+            },
+            {
+              "name": "reserve_liquidity_mint"
+            },
+            {
+              "name": "reserve_liquidity_supply",
+              "writable": true
+            },
+            {
+              "name": "reserve_collateral_mint",
+              "writable": true
+            },
+            {
+              "name": "reserve_destination_deposit_collateral",
+              "writable": true
+            },
+            {
+              "name": "user_source_liquidity",
+              "writable": true
+            },
+            {
+              "name": "placeholder_user_destination_collateral",
+              "optional": true
+            },
+            {
+              "name": "collateral_token_program"
+            },
+            {
+              "name": "liquidity_token_program"
+            },
+            {
+              "name": "instruction_sysvar_account"
+            }
+          ]
+        },
+        {
+          "name": "deposit_farms_accounts",
+          "accounts": [
+            {
+              "name": "obligation_farm_user_state",
+              "writable": true,
+              "optional": true
+            },
+            {
+              "name": "reserve_farm_state",
+              "writable": true,
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "farms_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "liquidity_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_obligation_collateral_and_redeem_reserve_collateral",
+      "discriminator": [
+        75,
+        93,
+        93,
+        220,
+        34,
+        150,
+        218,
+        196
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "obligation",
+          "writable": true
+        },
+        {
+          "name": "lending_market"
+        },
+        {
+          "name": "lending_market_authority"
+        },
+        {
+          "name": "withdraw_reserve",
+          "writable": true
+        },
+        {
+          "name": "reserve_liquidity_mint"
+        },
+        {
+          "name": "reserve_source_collateral",
+          "writable": true
+        },
+        {
+          "name": "reserve_collateral_mint",
+          "writable": true
+        },
+        {
+          "name": "reserve_liquidity_supply",
+          "writable": true
+        },
+        {
+          "name": "user_destination_liquidity",
+          "writable": true
+        },
+        {
+          "name": "placeholder_user_destination_collateral",
+          "optional": true
+        },
+        {
+          "name": "collateral_token_program"
+        },
+        {
+          "name": "liquidity_token_program"
+        },
+        {
+          "name": "instruction_sysvar_account"
+        }
+      ],
+      "args": [
+        {
+          "name": "collateral_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_obligation_collateral_and_redeem_reserve_collateral_v2",
+      "discriminator": [
+        235,
+        52,
+        119,
+        152,
+        149,
+        197,
+        20,
+        7
+      ],
+      "accounts": [
+        {
+          "name": "withdraw_accounts",
+          "accounts": [
+            {
+              "name": "owner",
+              "writable": true,
+              "signer": true
+            },
+            {
+              "name": "obligation",
+              "writable": true
+            },
+            {
+              "name": "lending_market"
+            },
+            {
+              "name": "lending_market_authority"
+            },
+            {
+              "name": "withdraw_reserve",
+              "writable": true
+            },
+            {
+              "name": "reserve_liquidity_mint"
+            },
+            {
+              "name": "reserve_source_collateral",
+              "writable": true
+            },
+            {
+              "name": "reserve_collateral_mint",
+              "writable": true
+            },
+            {
+              "name": "reserve_liquidity_supply",
+              "writable": true
+            },
+            {
+              "name": "user_destination_liquidity",
+              "writable": true
+            },
+            {
+              "name": "placeholder_user_destination_collateral",
+              "optional": true
+            },
+            {
+              "name": "collateral_token_program"
+            },
+            {
+              "name": "liquidity_token_program"
+            },
+            {
+              "name": "instruction_sysvar_account"
+            }
+          ]
+        },
+        {
+          "name": "withdraw_farms_accounts",
+          "accounts": [
+            {
+              "name": "obligation_farm_user_state",
+              "writable": true,
+              "optional": true
+            },
+            {
+              "name": "reserve_farm_state",
+              "writable": true,
+              "optional": true
+            }
+          ]
+        },
+        {
+          "name": "farms_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "collateral_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "init_user_metadata",
+      "discriminator": [
+        117,
+        169,
+        176,
+        69,
+        197,
+        23,
+        15,
+        162
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true
+        },
+        {
+          "name": "fee_payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_metadata",
+          "writable": true
+        },
+        {
+          "name": "referrer_user_metadata",
+          "optional": true
+        },
+        {
+          "name": "rent"
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "user_lookup_table",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [],
+  "events": [],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidMarketAuthority",
+      "msg": "Market authority is invalid"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidMarketOwner",
+      "msg": "Market owner is invalid"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidAccountOwner",
+      "msg": "Input account owner is not the program address"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAmount",
+      "msg": "Input amount is invalid"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidConfig",
+      "msg": "Input config value is invalid"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidSigner",
+      "msg": "Signer is not allowed to perform this action"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidAccountInput",
+      "msg": "Invalid account input"
+    },
+    {
+      "code": 6007,
+      "name": "MathOverflow",
+      "msg": "Math operation overflow"
+    },
+    {
+      "code": 6008,
+      "name": "InsufficientLiquidity",
+      "msg": "Insufficient liquidity available"
+    },
+    {
+      "code": 6009,
+      "name": "ReserveStale",
+      "msg": "Reserve state needs to be refreshed"
+    },
+    {
+      "code": 6010,
+      "name": "WithdrawTooSmall",
+      "msg": "Withdraw amount too small"
+    },
+    {
+      "code": 6011,
+      "name": "WithdrawTooLarge",
+      "msg": "Withdraw amount too large"
+    },
+    {
+      "code": 6012,
+      "name": "BorrowTooSmall",
+      "msg": "Borrow amount too small to receive liquidity after fees"
+    },
+    {
+      "code": 6013,
+      "name": "BorrowTooLarge",
+      "msg": "Borrow amount too large for deposited collateral"
+    },
+    {
+      "code": 6014,
+      "name": "RepayTooSmall",
+      "msg": "Repay amount too small to transfer liquidity"
+    },
+    {
+      "code": 6015,
+      "name": "LiquidationTooSmall",
+      "msg": "Liquidation amount too small to receive collateral"
+    },
+    {
+      "code": 6016,
+      "name": "ObligationHealthy",
+      "msg": "Cannot liquidate healthy obligations"
+    },
+    {
+      "code": 6017,
+      "name": "ObligationStale",
+      "msg": "Obligation state needs to be refreshed"
+    },
+    {
+      "code": 6018,
+      "name": "ObligationReserveLimit",
+      "msg": "Obligation reserve limit exceeded"
+    },
+    {
+      "code": 6019,
+      "name": "InvalidObligationOwner",
+      "msg": "Obligation owner is invalid"
+    },
+    {
+      "code": 6020,
+      "name": "ObligationDepositsEmpty",
+      "msg": "Obligation deposits are empty"
+    },
+    {
+      "code": 6021,
+      "name": "ObligationBorrowsEmpty",
+      "msg": "Obligation borrows are empty"
+    },
+    {
+      "code": 6022,
+      "name": "ObligationDepositsZero",
+      "msg": "Obligation deposits have zero value"
+    },
+    {
+      "code": 6023,
+      "name": "ObligationBorrowsZero",
+      "msg": "Obligation borrows have zero value"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidObligationCollateral",
+      "msg": "Invalid obligation collateral"
+    },
+    {
+      "code": 6025,
+      "name": "InvalidObligationLiquidity",
+      "msg": "Invalid obligation liquidity"
+    },
+    {
+      "code": 6026,
+      "name": "ObligationCollateralEmpty",
+      "msg": "Obligation collateral is empty"
+    },
+    {
+      "code": 6027,
+      "name": "ObligationLiquidityEmpty",
+      "msg": "Obligation liquidity is empty"
+    },
+    {
+      "code": 6028,
+      "name": "NegativeInterestRate",
+      "msg": "Interest rate is negative"
+    },
+    {
+      "code": 6029,
+      "name": "InvalidOracleConfig",
+      "msg": "Input oracle config is invalid"
+    },
+    {
+      "code": 6030,
+      "name": "InsufficientProtocolFeesToRedeem",
+      "msg": "Insufficient protocol fees to claim or no liquidity available"
+    },
+    {
+      "code": 6031,
+      "name": "FlashBorrowCpi",
+      "msg": "No cpi flash borrows allowed"
+    },
+    {
+      "code": 6032,
+      "name": "NoFlashRepayFound",
+      "msg": "No corresponding repay found for flash borrow"
+    },
+    {
+      "code": 6033,
+      "name": "InvalidFlashRepay",
+      "msg": "Invalid repay found"
+    },
+    {
+      "code": 6034,
+      "name": "FlashRepayCpi",
+      "msg": "No cpi flash repays allowed"
+    },
+    {
+      "code": 6035,
+      "name": "MultipleFlashBorrows",
+      "msg": "Multiple flash borrows not allowed in the same transaction"
+    },
+    {
+      "code": 6036,
+      "name": "FlashLoansDisabled",
+      "msg": "Flash loans are disabled for this reserve"
+    },
+    {
+      "code": 6037,
+      "name": "SwitchboardV2Error",
+      "msg": "Switchboard error"
+    },
+    {
+      "code": 6038,
+      "name": "CouldNotDeserializeScope",
+      "msg": "Cannot deserialize the scope price account"
+    },
+    {
+      "code": 6039,
+      "name": "PriceTooOld",
+      "msg": "Price too old"
+    },
+    {
+      "code": 6040,
+      "name": "PriceTooDivergentFromTwap",
+      "msg": "Price too divergent from twap"
+    },
+    {
+      "code": 6041,
+      "name": "InvalidTwapPrice",
+      "msg": "Invalid twap price"
+    },
+    {
+      "code": 6042,
+      "name": "GlobalEmergencyMode",
+      "msg": "Emergency mode is enabled"
+    },
+    {
+      "code": 6043,
+      "name": "InvalidFlag",
+      "msg": "Invalid lending market config"
+    },
+    {
+      "code": 6044,
+      "name": "PriceNotValid",
+      "msg": "Price is not valid"
+    },
+    {
+      "code": 6045,
+      "name": "PriceIsBiggerThanHeuristic",
+      "msg": "Price is bigger than allowed by heuristic"
+    },
+    {
+      "code": 6046,
+      "name": "PriceIsLowerThanHeuristic",
+      "msg": "Price lower than allowed by heuristic"
+    },
+    {
+      "code": 6047,
+      "name": "PriceIsZero",
+      "msg": "Price is zero"
+    },
+    {
+      "code": 6048,
+      "name": "PriceConfidenceTooWide",
+      "msg": "Price confidence too wide"
+    },
+    {
+      "code": 6049,
+      "name": "IntegerOverflow",
+      "msg": "Conversion between integers failed"
+    },
+    {
+      "code": 6050,
+      "name": "NoFarmForReserve",
+      "msg": "This reserve does not have a farm"
+    },
+    {
+      "code": 6051,
+      "name": "IncorrectInstructionInPosition",
+      "msg": "Wrong instruction at expected position"
+    },
+    {
+      "code": 6052,
+      "name": "NoPriceFound",
+      "msg": "No price found"
+    },
+    {
+      "code": 6053,
+      "name": "InvalidTwapConfig",
+      "msg": "Invalid Twap configuration: Twap is enabled but one of the enabled price doesn't have a twap"
+    },
+    {
+      "code": 6054,
+      "name": "InvalidPythPriceAccount",
+      "msg": "Pyth price account does not match configuration"
+    },
+    {
+      "code": 6055,
+      "name": "InvalidSwitchboardAccount",
+      "msg": "Switchboard account(s) do not match configuration"
+    },
+    {
+      "code": 6056,
+      "name": "InvalidScopePriceAccount",
+      "msg": "Scope price account does not match configuration"
+    },
+    {
+      "code": 6057,
+      "name": "ObligationCollateralLtvZero",
+      "msg": "The obligation has one collateral with an LTV set to 0. Withdraw it before withdrawing other collaterals"
+    },
+    {
+      "code": 6058,
+      "name": "InvalidObligationSeedsValue",
+      "msg": "Seeds must be default pubkeys for tag 0, and mint addresses for tag 1 or 2"
+    },
+    {
+      "code": 6059,
+      "name": "DeprecatedInvalidObligationId",
+      "msg": "[DEPRECATED] Obligation id must be 0"
+    },
+    {
+      "code": 6060,
+      "name": "InvalidBorrowRateCurvePoint",
+      "msg": "Invalid borrow rate curve point"
+    },
+    {
+      "code": 6061,
+      "name": "InvalidUtilizationRate",
+      "msg": "Invalid utilization rate"
+    },
+    {
+      "code": 6062,
+      "name": "CannotSocializeObligationWithCollateral",
+      "msg": "Obligation hasn't been fully liquidated and debt cannot be socialized."
+    },
+    {
+      "code": 6063,
+      "name": "ObligationEmpty",
+      "msg": "Obligation has no borrows or deposits."
+    },
+    {
+      "code": 6064,
+      "name": "WithdrawalCapReached",
+      "msg": "Withdrawal cap is reached"
+    },
+    {
+      "code": 6065,
+      "name": "LastTimestampGreaterThanCurrent",
+      "msg": "The last interval start timestamp is greater than the current timestamp"
+    },
+    {
+      "code": 6066,
+      "name": "LiquidationRewardTooSmall",
+      "msg": "The reward amount is less than the minimum acceptable received liquidity"
+    },
+    {
+      "code": 6067,
+      "name": "IsolatedAssetTierViolation",
+      "msg": "Isolated Asset Tier Violation"
+    },
+    {
+      "code": 6068,
+      "name": "InconsistentElevationGroup",
+      "msg": "The obligation's elevation group and the reserve's are not the same"
+    },
+    {
+      "code": 6069,
+      "name": "InvalidElevationGroup",
+      "msg": "The elevation group chosen for the reserve does not exist in the lending market"
+    },
+    {
+      "code": 6070,
+      "name": "InvalidElevationGroupConfig",
+      "msg": "The elevation group updated has wrong parameters set"
+    },
+    {
+      "code": 6071,
+      "name": "UnhealthyElevationGroupLtv",
+      "msg": "The current obligation must have most or all its debt repaid before changing the elevation group"
+    },
+    {
+      "code": 6072,
+      "name": "ElevationGroupNewLoansDisabled",
+      "msg": "Elevation group does not accept any new loans or any new borrows/withdrawals"
+    },
+    {
+      "code": 6073,
+      "name": "ReserveDeprecated",
+      "msg": "Reserve was deprecated, no longer usable"
+    },
+    {
+      "code": 6074,
+      "name": "ReferrerAccountNotInitialized",
+      "msg": "Referrer account not initialized"
+    },
+    {
+      "code": 6075,
+      "name": "ReferrerAccountMintMissmatch",
+      "msg": "Referrer account mint does not match the operation reserve mint"
+    },
+    {
+      "code": 6076,
+      "name": "ReferrerAccountWrongAddress",
+      "msg": "Referrer account address is not a valid program address"
+    },
+    {
+      "code": 6077,
+      "name": "ReferrerAccountReferrerMissmatch",
+      "msg": "Referrer account referrer does not match the owner referrer"
+    },
+    {
+      "code": 6078,
+      "name": "ReferrerAccountMissing",
+      "msg": "Referrer account missing for obligation with referrer"
+    },
+    {
+      "code": 6079,
+      "name": "InsufficientReferralFeesToRedeem",
+      "msg": "Insufficient referral fees to claim or no liquidity available"
+    },
+    {
+      "code": 6080,
+      "name": "CpiDisabled",
+      "msg": "CPI disabled for this instruction"
+    },
+    {
+      "code": 6081,
+      "name": "ShortUrlNotAsciiAlphanumeric",
+      "msg": "Referrer short_url is not ascii alphanumeric"
+    },
+    {
+      "code": 6082,
+      "name": "ReserveObsolete",
+      "msg": "Reserve is marked as obsolete"
+    },
+    {
+      "code": 6083,
+      "name": "ElevationGroupAlreadyActivated",
+      "msg": "Obligation already part of the same elevation group"
+    },
+    {
+      "code": 6084,
+      "name": "ObligationInObsoleteReserve",
+      "msg": "Obligation has a deposit or borrow in an obsolete reserve"
+    },
+    {
+      "code": 6085,
+      "name": "ReferrerStateOwnerMismatch",
+      "msg": "Referrer state owner does not match the given signer"
+    },
+    {
+      "code": 6086,
+      "name": "UserMetadataOwnerAlreadySet",
+      "msg": "User metadata owner is already set"
+    },
+    {
+      "code": 6087,
+      "name": "CollateralNonLiquidatable",
+      "msg": "This collateral cannot be liquidated (LTV set to 0)"
+    },
+    {
+      "code": 6088,
+      "name": "BorrowingDisabled",
+      "msg": "Borrowing is disabled"
+    },
+    {
+      "code": 6089,
+      "name": "BorrowLimitExceeded",
+      "msg": "Cannot borrow above borrow limit"
+    },
+    {
+      "code": 6090,
+      "name": "DepositLimitExceeded",
+      "msg": "Cannot deposit above deposit limit"
+    },
+    {
+      "code": 6091,
+      "name": "BorrowingDisabledOutsideElevationGroup",
+      "msg": "Reserve does not accept any new borrows outside elevation group"
+    },
+    {
+      "code": 6092,
+      "name": "NetValueRemainingTooSmall",
+      "msg": "Net value remaining too small"
+    },
+    {
+      "code": 6093,
+      "name": "WorseLtvBlocked",
+      "msg": "Cannot get the obligation in a worse position"
+    },
+    {
+      "code": 6094,
+      "name": "LiabilitiesBiggerThanAssets",
+      "msg": "Cannot have more liabilities than assets in a position"
+    },
+    {
+      "code": 6095,
+      "name": "ReserveTokenBalanceMismatch",
+      "msg": "Reserve state and token account cannot drift"
+    },
+    {
+      "code": 6096,
+      "name": "ReserveVaultBalanceMismatch",
+      "msg": "Reserve token account has been unexpectedly modified"
+    },
+    {
+      "code": 6097,
+      "name": "ReserveAccountingMismatch",
+      "msg": "Reserve internal state accounting has been unexpectedly modified"
+    },
+    {
+      "code": 6098,
+      "name": "BorrowingAboveUtilizationRateDisabled",
+      "msg": "Borrowing above set utilization rate is disabled"
+    },
+    {
+      "code": 6099,
+      "name": "LiquidationBorrowFactorPriority",
+      "msg": "Liquidation must prioritize the debt with the highest borrow factor"
+    },
+    {
+      "code": 6100,
+      "name": "LiquidationLowestLiquidationLtvPriority",
+      "msg": "Liquidation must prioritize the collateral with the lowest liquidation LTV"
+    },
+    {
+      "code": 6101,
+      "name": "ElevationGroupBorrowLimitExceeded",
+      "msg": "Elevation group borrow limit exceeded"
+    },
+    {
+      "code": 6102,
+      "name": "ElevationGroupWithoutDebtReserve",
+      "msg": "The elevation group does not have a debt reserve defined"
+    },
+    {
+      "code": 6103,
+      "name": "ElevationGroupMaxCollateralReserveZero",
+      "msg": "The elevation group does not allow any collateral reserves"
+    },
+    {
+      "code": 6104,
+      "name": "ElevationGroupHasAnotherDebtReserve",
+      "msg": "In elevation group attempt to borrow from a reserve that is not the debt reserve"
+    },
+    {
+      "code": 6105,
+      "name": "ElevationGroupDebtReserveAsCollateral",
+      "msg": "The elevation group's debt reserve cannot be used as a collateral reserve"
+    },
+    {
+      "code": 6106,
+      "name": "ObligationCollateralExceedsElevationGroupLimit",
+      "msg": "Obligation have more collateral than the maximum allowed by the elevation group"
+    },
+    {
+      "code": 6107,
+      "name": "ObligationElevationGroupMultipleDebtReserve",
+      "msg": "Obligation is an elevation group but have more than one debt reserve"
+    },
+    {
+      "code": 6108,
+      "name": "UnsupportedTokenExtension",
+      "msg": "Mint has a token (2022) extension that is not supported"
+    },
+    {
+      "code": 6109,
+      "name": "InvalidTokenAccount",
+      "msg": "Can't have an spl token mint with a t22 account"
+    },
+    {
+      "code": 6110,
+      "name": "DepositDisabledOutsideElevationGroup",
+      "msg": "Can't deposit into this reserve outside elevation group"
+    },
+    {
+      "code": 6111,
+      "name": "CannotCalculateReferralAmountDueToSlotsMismatch",
+      "msg": "Cannot calculate referral amount due to slots mismatch"
+    },
+    {
+      "code": 6112,
+      "name": "ObligationOwnersMustMatch",
+      "msg": "Obligation owners must match"
+    },
+    {
+      "code": 6113,
+      "name": "ObligationsMustMatch",
+      "msg": "Obligations must match"
+    },
+    {
+      "code": 6114,
+      "name": "LendingMarketsMustMatch",
+      "msg": "Lending markets must match"
+    },
+    {
+      "code": 6115,
+      "name": "ObligationCurrentlyMarkedForDeleveraging",
+      "msg": "Obligation is already marked for deleveraging"
+    },
+    {
+      "code": 6116,
+      "name": "MaximumWithdrawValueZero",
+      "msg": "Maximum withdrawable value of this collateral is zero, LTV needs improved"
+    },
+    {
+      "code": 6117,
+      "name": "ZeroMaxLtvAssetsInDeposits",
+      "msg": "No max LTV 0 assets allowed in deposits for repay and withdraw"
+    },
+    {
+      "code": 6118,
+      "name": "LowestLtvAssetsPriority",
+      "msg": "Withdrawing must prioritize the collateral with the lowest reserve max-LTV"
+    },
+    {
+      "code": 6119,
+      "name": "WorseLtvThanUnhealthyLtv",
+      "msg": "Cannot get the obligation liquidatable"
+    },
+    {
+      "code": 6120,
+      "name": "FarmAccountsMissing",
+      "msg": "Farm accounts to refresh are missing"
+    },
+    {
+      "code": 6121,
+      "name": "RepayTooSmallForFullLiquidation",
+      "msg": "Repay amount is too small to satisfy the mandatory full liquidation"
+    },
+    {
+      "code": 6122,
+      "name": "InsufficientRepayAmount",
+      "msg": "Liquidator provided repay amount lower than required by liquidation rules"
+    },
+    {
+      "code": 6123,
+      "name": "OrderIndexOutOfBounds",
+      "msg": "Obligation order of the given index cannot exist"
+    },
+    {
+      "code": 6124,
+      "name": "InvalidOrderConfiguration",
+      "msg": "Given order configuration has wrong parameters"
+    },
+    {
+      "code": 6125,
+      "name": "OrderConfigurationNotSupportedByObligation",
+      "msg": "Given order configuration cannot be used with the current state of the obligation"
+    },
+    {
+      "code": 6126,
+      "name": "OperationNotPermittedWithCurrentObligationOrders",
+      "msg": "Single debt, single collateral obligation orders have to be cancelled before changing the deposit/borrow count"
+    },
+    {
+      "code": 6127,
+      "name": "OperationNotPermittedMarketImmutable",
+      "msg": "Cannot update lending market because it is set as immutable"
+    },
+    {
+      "code": 6128,
+      "name": "OrderCreationDisabled",
+      "msg": "Creation of new orders is disabled"
+    },
+    {
+      "code": 6129,
+      "name": "NoUpgradeAuthority",
+      "msg": "Cannot initialize global config because there is no upgrade authority to the program"
+    },
+    {
+      "code": 6130,
+      "name": "InitialAdminDepositExecuted",
+      "msg": "Initial admin deposit in reserve already executed"
+    },
+    {
+      "code": 6131,
+      "name": "ReserveHasNotReceivedInitialDeposit",
+      "msg": "Reserve has not received the initial deposit, cannot update config"
+    },
+    {
+      "code": 6132,
+      "name": "CTokenUsageBlocked",
+      "msg": "CToken minting/redeeming is blocked for this reserve"
+    },
+    {
+      "code": 6133,
+      "name": "CannotUseSameReserve",
+      "msg": "Cannot call ix with same reserve"
+    },
+    {
+      "code": 6134,
+      "name": "TransactionIncludesRestrictedPrograms",
+      "msg": "Transaction includes restricted programs"
+    },
+    {
+      "code": 6135,
+      "name": "BorrowOrderDebtLiquidityMintMismatch",
+      "msg": "There is no borrow order requesting debt in the given asset"
+    },
+    {
+      "code": 6136,
+      "name": "BorrowOrderMaxBorrowRateExceeded",
+      "msg": "Reserve used for fill exceeds the maximum borrow rate specified by the order"
+    },
+    {
+      "code": 6137,
+      "name": "BorrowOrderMinDebtTermInsufficient",
+      "msg": "Reserve used for fill defines a debt term shorter than specified by the order"
+    },
+    {
+      "code": 6138,
+      "name": "BorrowOrderFillTimeLimitExceeded",
+      "msg": "Borrow order can no longer be filled"
+    },
+    {
+      "code": 6139,
+      "name": "ReserveDebtMaturityReached",
+      "msg": "Cannot borrow from a reserve that reached its debt maturity timestamp"
+    },
+    {
+      "code": 6140,
+      "name": "NonUpdatableOrderConfiguration",
+      "msg": "Some piece of the order's configuration cannot be updated (the order should be cancelled and placed again)"
+    },
+    {
+      "code": 6141,
+      "name": "BorrowOrderExecutionDisabled",
+      "msg": "Execution of borrow orders is disabled"
+    },
+    {
+      "code": 6142,
+      "name": "DebtReachedReserveDebtTerm",
+      "msg": "Cannot increase the debt that has reached its end of term configured by the reserve"
+    },
+    {
+      "code": 6143,
+      "name": "ExpectationNotMet",
+      "msg": "The on-chain state does not meet expectation specified by the caller, so the operation must be aborted (to avoid race conditions)"
+    },
+    {
+      "code": 6144,
+      "name": "BorrowOrderFillValueTooSmall",
+      "msg": "Available liquidity could not satisfy the minimum required borrow order fill value"
+    },
+    {
+      "code": 6145,
+      "name": "WithdrawTicketIssuanceDisabled",
+      "msg": "Issuing new withdraw tickets is disabled by the market"
+    },
+    {
+      "code": 6146,
+      "name": "WithdrawTicketRedemptionDisabled",
+      "msg": "Redeeming withdraw tickets is disabled by the market"
+    },
+    {
+      "code": 6147,
+      "name": "WithdrawTicketStillValid",
+      "msg": "Recovering collateral is only available after the withdraw ticket has been marked invalid"
+    },
+    {
+      "code": 6148,
+      "name": "WithdrawTicketRequiresFullRedemption",
+      "msg": "The withdraw ticket's current state requires that it is fully redeemed (e.g. due to owner ATA creation), but there is not enough liquidity"
+    },
+    {
+      "code": 6149,
+      "name": "UserTokenBalanceMismatch",
+      "msg": "The user's token account has changed its balance in an unexpected way"
+    },
+    {
+      "code": 6150,
+      "name": "WithdrawQueuedLiquidityValueTooSmall",
+      "msg": "Available liquidity could not satisfy the minimum required ticketed withdrawal value"
+    },
+    {
+      "code": 6151,
+      "name": "InvalidTokenAccountState",
+      "msg": "Token account is in a state preventing the handler's operation (e.g. frozen or delegate)"
+    },
+    {
+      "code": 6152,
+      "name": "WithdrawTicketInvalid",
+      "msg": "Cannot use ticket that was already marked invalid"
+    },
+    {
+      "code": 6153,
+      "name": "BorrowOrderValueTooSmall",
+      "msg": "Borrow order's value would be below the market-configured minimum"
+    },
+    {
+      "code": 6154,
+      "name": "WithdrawTicketValueTooSmall",
+      "msg": "Withdraw ticket's value would be below the market-configured minimum"
+    }
+  ],
+  "types": [
+    {
+      "name": "InitObligationArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tag",
+            "type": "u8"
+          },
+          {
+            "name": "id",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

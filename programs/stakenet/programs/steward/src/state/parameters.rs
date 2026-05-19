@@ -1,0 +1,609 @@
+use std::mem::size_of;
+
+#[cfg(feature = "idl-build")]
+use anchor_lang::idl::{types::*, *};
+use anchor_lang::{prelude::Result, zero_copy};
+use borsh::{BorshDeserialize, BorshSerialize};
+use validator_history::utils::cast_epoch;
+
+use crate::{
+    constants::{
+        BASIS_POINTS_MAX, COMMISSION_MAX, COMPUTE_SCORE_SLOT_RANGE_MIN, EPOCH_PROGRESS_MAX,
+        MAX_VALIDATORS, NUM_EPOCHS_BETWEEN_SCORING_MAX, VALIDATOR_HISTORY_FIRST_RELIABLE_EPOCH,
+    },
+    errors::StewardError,
+};
+
+#[derive(BorshSerialize, BorshDeserialize, Debug, Default, Clone)]
+pub struct UpdateParametersArgs {
+    // Scoring parameters
+    pub mev_commission_range: Option<u16>,
+    pub epoch_credits_range: Option<u16>,
+    pub commission_range: Option<u16>,
+    pub scoring_delinquency_threshold_ratio: Option<f64>,
+    pub instant_unstake_delinquency_threshold_ratio: Option<f64>,
+    pub mev_commission_bps_threshold: Option<u16>,
+    pub commission_threshold: Option<u8>,
+    pub historical_commission_threshold: Option<u8>,
+    // Delegation parameters
+    pub num_delegation_validators: Option<u32>,
+    pub scoring_unstake_cap_bps: Option<u32>,
+    pub instant_unstake_cap_bps: Option<u32>,
+    pub stake_deposit_unstake_cap_bps: Option<u32>,
+    pub directed_stake_unstake_cap_bps: Option<u16>,
+    pub undirected_stake_ceiling_lamports: Option<u64>,
+    // State machine parameters
+    pub instant_unstake_epoch_progress: Option<f64>,
+    pub compute_score_slot_range: Option<u64>,
+    pub instant_unstake_inputs_epoch_progress: Option<f64>,
+    pub num_epochs_between_scoring: Option<u64>,
+    pub minimum_stake_lamports: Option<u64>,
+    pub minimum_voting_epochs: Option<u64>,
+    pub compute_score_epoch_progress: Option<f64>,
+}
+
+#[cfg(feature = "idl-build")]
+impl IdlBuild for UpdateParametersArgs {
+    fn get_full_path() -> String {
+        "UpdateParametersArgs".to_string()
+    }
+
+    fn create_type() -> Option<IdlTypeDef> {
+        Some(IdlTypeDef {
+            name: "UpdateParametersArgs".to_string(),
+            ty: IdlTypeDefTy::Struct {
+                fields: Some(IdlDefinedFields::Named(vec![
+                    IdlField {
+                        name: "mev_commission_range".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "epoch_credits_range".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "commission_range".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "scoring_delinquency_threshold_ratio".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::F64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "instant_unstake_delinquency_threshold_ratio".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::F64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "mev_commission_bps_threshold".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "commission_threshold".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U8)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "historical_commission_threshold".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U8)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "num_delegation_validators".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U32)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "scoring_unstake_cap_bps".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U32)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "instant_unstake_cap_bps".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U32)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "stake_deposit_unstake_cap_bps".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U32)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "directed_stake_unstake_cap_bps".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "instant_unstake_epoch_progress".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::F64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "compute_score_slot_range".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "instant_unstake_inputs_epoch_progress".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::F64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "num_epochs_between_scoring".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "minimum_stake_lamports".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "minimum_voting_epochs".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "compute_score_epoch_progress".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::F64)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "undirected_stake_ceiling_lamports".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U64)),
+                        docs: Default::default(),
+                    },
+                ])),
+            },
+            docs: Default::default(),
+            generics: Default::default(),
+            serialization: Default::default(),
+            repr: Default::default(),
+        })
+    }
+
+    fn insert_types(_types: &mut std::collections::BTreeMap<String, IdlTypeDef>) {}
+}
+
+static_assertions::const_assert_eq!(size_of::<Parameters>(), 352);
+
+#[derive(BorshSerialize, Default)]
+#[zero_copy]
+pub struct Parameters {
+    /////// Scoring parameters ///////
+    /// Number of epochs to consider for MEV commission
+    pub mev_commission_range: u16,
+
+    /// Number of epochs to consider for epoch credits
+    pub epoch_credits_range: u16,
+
+    /// Number of epochs to consider for commission
+    pub commission_range: u16,
+
+    /// Highest MEV commission rate allowed in bps
+    pub mev_commission_bps_threshold: u16,
+
+    /// Proportion of delinquent slots to total slots to trigger delinquency measurement in scoring
+    pub scoring_delinquency_threshold_ratio: f64,
+
+    /// Proportion of delinquent slots to total slots to trigger instant unstake
+    pub instant_unstake_delinquency_threshold_ratio: f64,
+
+    /// Highest commission rate allowed in commission_range epochs, in percent
+    pub commission_threshold: u8,
+
+    /// Highest commission rate allowed in tracked history
+    pub historical_commission_threshold: u8,
+
+    /// The number of epochs the priority fee distribution check should lookback
+    pub priority_fee_lookback_epochs: u8,
+
+    /// The offset of epochs for the priority fee distribution. E.g. look at epochs from
+    /// (current_epoch - offset - priority_fee_lookback_epochs) to (current_epoch - offset)
+    pub priority_fee_lookback_offset: u8,
+
+    /// The maximum validator commission before the validator scores 0.
+    /// E.g. 5_000 bps (50%) would mean: if the validator keeps > 50% of priority fees,
+    /// then score = 0
+    pub priority_fee_max_commission_bps: u16,
+
+    /// An error of margin for priority fee commission calculations
+    pub priority_fee_error_margin_bps: u16,
+
+    /////// Delegation parameters ///////
+    /// Number of validators to delegate to
+    pub num_delegation_validators: u32,
+
+    /// Maximum amount of the pool to be unstaked in a cycle for scoring (in basis points)
+    pub scoring_unstake_cap_bps: u32,
+
+    // Maximum amount of the pool to be unstaked in a cycle for instant unstake (in basis points)
+    pub instant_unstake_cap_bps: u32,
+
+    /// Maximum amount of the pool to be unstaked in a cycle from stake deposits (in basis points)
+    pub stake_deposit_unstake_cap_bps: u32,
+
+    /////// State machine operation parameters ///////
+    /// Number of slots that scoring must be completed in
+    pub compute_score_slot_range: u64,
+
+    /// Progress in epoch before instant unstake is allowed
+    pub instant_unstake_epoch_progress: f64,
+
+    /// Validator history copy_vote_account and Cluster History must be updated past this epoch progress before calculating instant unstake
+    pub instant_unstake_inputs_epoch_progress: f64,
+
+    /// Number of epochs a given validator set will be delegated to before recomputing scores
+    pub num_epochs_between_scoring: u64,
+
+    /// Minimum stake required to be added to pool ValidatorList and eligible for delegation
+    pub minimum_stake_lamports: u64,
+
+    /// Minimum epochs voting required to be in the pool ValidatorList and eligible for delegation
+    pub minimum_voting_epochs: u64,
+
+    /// The epoch when priority fee scoring starts. Scores default to 1 for all prior epochs
+    pub priority_fee_scoring_start_epoch: u16,
+
+    pub _padding_0: [u8; 6],
+
+    pub _padding_1: [u64; 28],
+    /// The minimum epoch progress for computing scores
+    pub compute_score_epoch_progress: f64,
+
+    /// Maximum percentage of the pool to be unstaked from directed stake (in basis points)
+    pub directed_stake_unstake_cap_bps: u16,
+
+    pub _padding_2: [u8; 6],
+
+    /// Maximum undirected stake pool TVL. During rebalance, reserve_lamports is capped to
+    /// (ceiling - current_undirected_TVL) to ensure undirected stake never exceeds this ceiling.
+    /// When undirected TVL >= ceiling, no stake increases will occur.
+    /// u64 does not agree with zero-copy alignment and we do not have the luxury of reordering
+    /// fields due to it being live on mainnet.
+    pub undirected_stake_ceiling_lamports: [u8; 8],
+}
+
+impl Parameters {
+    pub fn undirected_stake_ceiling_lamports(&self) -> u64 {
+        u64::from_le_bytes(self.undirected_stake_ceiling_lamports)
+    }
+
+    /// Merges the updated parameters with the current parameters and validates them
+    pub fn get_valid_updated_parameters(
+        self,
+        args: &UpdateParametersArgs,
+        current_epoch: u64,
+        slots_per_epoch: u64,
+    ) -> Result<Parameters> {
+        // Updates parameters and validates them
+        let UpdateParametersArgs {
+            mev_commission_range,
+            epoch_credits_range,
+            commission_range,
+            scoring_delinquency_threshold_ratio,
+            instant_unstake_delinquency_threshold_ratio,
+            mev_commission_bps_threshold,
+            commission_threshold,
+            historical_commission_threshold,
+            num_delegation_validators,
+            scoring_unstake_cap_bps,
+            instant_unstake_cap_bps,
+            stake_deposit_unstake_cap_bps,
+            directed_stake_unstake_cap_bps,
+            instant_unstake_epoch_progress,
+            instant_unstake_inputs_epoch_progress,
+            compute_score_slot_range,
+            num_epochs_between_scoring,
+            minimum_stake_lamports,
+            minimum_voting_epochs,
+            compute_score_epoch_progress,
+            undirected_stake_ceiling_lamports,
+        } = *args;
+
+        let mut new_parameters = self;
+
+        if let Some(mev_commission_range) = mev_commission_range {
+            new_parameters.mev_commission_range = mev_commission_range;
+        }
+
+        if let Some(epoch_credits_range) = epoch_credits_range {
+            new_parameters.epoch_credits_range = epoch_credits_range;
+        }
+
+        if let Some(commission_range) = commission_range {
+            new_parameters.commission_range = commission_range;
+        }
+
+        if let Some(scoring_delinquency_threshold_ratio) = scoring_delinquency_threshold_ratio {
+            new_parameters.scoring_delinquency_threshold_ratio =
+                scoring_delinquency_threshold_ratio;
+        }
+
+        if let Some(instant_unstake_delinquency_threshold_ratio) =
+            instant_unstake_delinquency_threshold_ratio
+        {
+            new_parameters.instant_unstake_delinquency_threshold_ratio =
+                instant_unstake_delinquency_threshold_ratio;
+        }
+
+        if let Some(mev_commission_bps_threshold) = mev_commission_bps_threshold {
+            new_parameters.mev_commission_bps_threshold = mev_commission_bps_threshold;
+        }
+
+        if let Some(commission_threshold) = commission_threshold {
+            new_parameters.commission_threshold = commission_threshold;
+        }
+
+        if let Some(historical_commission_threshold) = historical_commission_threshold {
+            new_parameters.historical_commission_threshold = historical_commission_threshold;
+        }
+
+        if let Some(num_delegation_validators) = num_delegation_validators {
+            new_parameters.num_delegation_validators = num_delegation_validators;
+        }
+
+        if let Some(scoring_unstake_cap_bps) = scoring_unstake_cap_bps {
+            new_parameters.scoring_unstake_cap_bps = scoring_unstake_cap_bps;
+        }
+
+        if let Some(instant_unstake_cap_bps) = instant_unstake_cap_bps {
+            new_parameters.instant_unstake_cap_bps = instant_unstake_cap_bps;
+        }
+
+        if let Some(stake_deposit_unstake_cap_bps) = stake_deposit_unstake_cap_bps {
+            new_parameters.stake_deposit_unstake_cap_bps = stake_deposit_unstake_cap_bps;
+        }
+
+        if let Some(directed_stake_unstake_cap_bps) = directed_stake_unstake_cap_bps {
+            new_parameters.directed_stake_unstake_cap_bps = directed_stake_unstake_cap_bps;
+        }
+
+        if let Some(instant_unstake_epoch_progress) = instant_unstake_epoch_progress {
+            new_parameters.instant_unstake_epoch_progress = instant_unstake_epoch_progress;
+        }
+
+        if let Some(vote_account_update_epoch_progress) = instant_unstake_inputs_epoch_progress {
+            new_parameters.instant_unstake_inputs_epoch_progress =
+                vote_account_update_epoch_progress;
+        }
+
+        if let Some(compute_score_slot_range) = compute_score_slot_range {
+            new_parameters.compute_score_slot_range = compute_score_slot_range;
+        }
+
+        if let Some(num_epochs_between_scoring) = num_epochs_between_scoring {
+            new_parameters.num_epochs_between_scoring = num_epochs_between_scoring;
+        }
+
+        if let Some(minimum_stake_lamports) = minimum_stake_lamports {
+            new_parameters.minimum_stake_lamports = minimum_stake_lamports;
+        }
+
+        if let Some(minimum_voting_epochs) = minimum_voting_epochs {
+            new_parameters.minimum_voting_epochs = minimum_voting_epochs;
+        }
+
+        if let Some(compute_score_epoch_progress) = compute_score_epoch_progress {
+            new_parameters.compute_score_epoch_progress = compute_score_epoch_progress;
+        }
+
+        if let Some(undirected_stake_ceiling_lamports) = undirected_stake_ceiling_lamports {
+            new_parameters.undirected_stake_ceiling_lamports =
+                undirected_stake_ceiling_lamports.to_le_bytes();
+        }
+
+        // Validation will throw an error if any of the parameters are invalid
+        new_parameters.validate(current_epoch, slots_per_epoch)?;
+
+        Ok(new_parameters)
+    }
+
+    pub fn priority_fee_parameters(
+        self,
+        args: &UpdatePriorityFeeParametersArgs,
+        current_epoch: u64,
+        slots_per_epoch: u64,
+    ) -> Result<Self> {
+        let UpdatePriorityFeeParametersArgs {
+            priority_fee_lookback_epochs,
+            priority_fee_lookback_offset,
+            priority_fee_max_commission_bps,
+            priority_fee_error_margin_bps,
+            priority_fee_scoring_start_epoch,
+        } = *args;
+
+        let mut new_parameters = self;
+
+        if let Some(priority_fee_lookback_epochs) = priority_fee_lookback_epochs {
+            new_parameters.priority_fee_lookback_epochs = priority_fee_lookback_epochs;
+        }
+
+        if let Some(priority_fee_lookback_offset) = priority_fee_lookback_offset {
+            new_parameters.priority_fee_lookback_offset = priority_fee_lookback_offset;
+        }
+
+        if let Some(priority_fee_max_commission_bps) = priority_fee_max_commission_bps {
+            new_parameters.priority_fee_max_commission_bps = priority_fee_max_commission_bps;
+        }
+
+        if let Some(priority_fee_error_margin_bps) = priority_fee_error_margin_bps {
+            new_parameters.priority_fee_error_margin_bps = priority_fee_error_margin_bps;
+        }
+
+        if let Some(priority_fee_scoring_start_epoch) = priority_fee_scoring_start_epoch {
+            new_parameters.priority_fee_scoring_start_epoch = priority_fee_scoring_start_epoch;
+        }
+
+        new_parameters.validate(current_epoch, slots_per_epoch)?;
+
+        Ok(new_parameters)
+    }
+
+    /// Validate reasonable bounds on parameters
+    pub fn validate(&self, current_epoch: u64, slots_per_epoch: u64) -> Result<()> {
+        // Cannot evaluate epochs before VALIDATOR_HISTORY_FIRST_RELIABLE_EPOCH or beyond the CircBuf length
+        let window_max = current_epoch
+            .checked_sub(VALIDATOR_HISTORY_FIRST_RELIABLE_EPOCH)
+            .ok_or(StewardError::ArithmeticError)?
+            .min(validator_history::ValidatorHistory::MAX_ITEMS as u64 - 1);
+        let window_max = cast_epoch(window_max)?;
+
+        if self.mev_commission_range > window_max {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.epoch_credits_range > window_max {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.commission_range > window_max {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        // Proportion between 0 and 1
+        if !(0. ..=1.).contains(&self.scoring_delinquency_threshold_ratio) {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        // Proportion between 0 and 1
+        if !(0. ..=1.).contains(&self.instant_unstake_delinquency_threshold_ratio) {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.mev_commission_bps_threshold > BASIS_POINTS_MAX {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.commission_threshold > COMMISSION_MAX {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.historical_commission_threshold > COMMISSION_MAX {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.num_delegation_validators == 0
+            || self.num_delegation_validators > MAX_VALIDATORS as u32
+        {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.scoring_unstake_cap_bps > BASIS_POINTS_MAX as u32 {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.instant_unstake_cap_bps > BASIS_POINTS_MAX as u32 {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.stake_deposit_unstake_cap_bps > BASIS_POINTS_MAX as u32 {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if !(0. ..=EPOCH_PROGRESS_MAX).contains(&self.instant_unstake_epoch_progress) {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if !(0. ..=EPOCH_PROGRESS_MAX).contains(&self.instant_unstake_inputs_epoch_progress) {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.minimum_voting_epochs > window_max as u64 {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if !(COMPUTE_SCORE_SLOT_RANGE_MIN..=slots_per_epoch)
+            .contains(&self.compute_score_slot_range)
+        {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.num_epochs_between_scoring == 0
+            || self.num_epochs_between_scoring > NUM_EPOCHS_BETWEEN_SCORING_MAX
+        {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.priority_fee_max_commission_bps > BASIS_POINTS_MAX {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.priority_fee_error_margin_bps > BASIS_POINTS_MAX {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.compute_score_epoch_progress < 0.0 || self.compute_score_epoch_progress >= 1.0 {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        if self.directed_stake_unstake_cap_bps > BASIS_POINTS_MAX {
+            return Err(StewardError::InvalidParameterValue.into());
+        }
+
+        Ok(())
+    }
+}
+
+#[derive(BorshSerialize, BorshDeserialize, Debug, Default, Clone)]
+pub struct UpdatePriorityFeeParametersArgs {
+    // Priority fee parameters
+    pub priority_fee_lookback_epochs: Option<u8>,
+    pub priority_fee_lookback_offset: Option<u8>,
+    pub priority_fee_max_commission_bps: Option<u16>,
+    pub priority_fee_error_margin_bps: Option<u16>,
+    pub priority_fee_scoring_start_epoch: Option<u16>,
+}
+
+#[cfg(feature = "idl-build")]
+impl IdlBuild for UpdatePriorityFeeParametersArgs {
+    fn get_full_path() -> String {
+        "UpdatePriorityFeeParametersArgs".to_string()
+    }
+
+    fn create_type() -> Option<IdlTypeDef> {
+        Some(IdlTypeDef {
+            name: "UpdatePriorityFeeParametersArgs".to_string(),
+            ty: IdlTypeDefTy::Struct {
+                fields: Some(IdlDefinedFields::Named(vec![
+                    IdlField {
+                        name: "priority_fee_lookback_epochs".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U8)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "priority_fee_lookback_offset".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U8)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "priority_fee_max_commission_bps".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "priority_fee_error_margin_bps".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                    IdlField {
+                        name: "priority_fee_scoring_start_epoch".to_string(),
+                        ty: IdlType::Option(Box::new(IdlType::U16)),
+                        docs: Default::default(),
+                    },
+                ])),
+            },
+            docs: Default::default(),
+            generics: Default::default(),
+            serialization: Default::default(),
+            repr: Default::default(),
+        })
+    }
+
+    fn insert_types(_types: &mut std::collections::BTreeMap<String, IdlTypeDef>) {}
+}

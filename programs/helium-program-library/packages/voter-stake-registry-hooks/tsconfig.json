@@ -1,0 +1,35 @@
+{
+  "extends": "../../tsconfig.root.json",
+  "references": [
+    {
+      "path": "../account-fetch-cache"
+    },
+    {
+      "path": "../account-fetch-cache-hooks"
+    },
+    {
+      "path": "../helium-react-hooks"
+    },
+    {
+      "path": "../automation-hooks"
+    },
+    {
+      "path": "../voter-stake-registry-sdk"
+    },
+    {
+      "path": "../hpl-crons-sdk"
+    },
+    {
+      "path": "../circuit-breaker-sdk"
+    },
+    {
+      "path": "../helium-sub-daos-sdk"
+    },
+    {
+      "path": "./tsconfig.cjs.json"
+    },
+    {
+      "path": "./tsconfig.esm.json"
+    }
+  ]
+}

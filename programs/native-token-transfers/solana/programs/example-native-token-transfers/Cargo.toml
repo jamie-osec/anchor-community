@@ -1,0 +1,58 @@
+[package]
+name = "example-native-token-transfers"
+version = "3.0.0"
+description = "Example implementation of native token transfer standard"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "example_native_token_transfers"
+
+[features]
+default = []
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+idl-build = [
+  "anchor-lang/idl-build",
+  "anchor-spl/idl-build",
+  "wormhole-anchor-sdk/idl-build",
+  "wormhole-anchor-sdk/no-custom-discriminator",
+  "wormhole-anchor-sdk/mainnet",
+]
+# cargo-test-sbf will pass this along
+test-sbf = []
+# networks
+mainnet = [ "wormhole-anchor-sdk/mainnet" ]
+bridge-address-from-env = [ "wormhole-anchor-sdk/from-env" ]
+solana-devnet = [ "wormhole-anchor-sdk/solana-devnet" ]
+tilt-devnet = [ "wormhole-anchor-sdk/tilt-devnet" ]
+tilt-devnet2 = [ "tilt-devnet" ]
+
+[lints]
+workspace = true
+
+[dependencies]
+anchor-lang = { workspace = true, features = ["init-if-needed"] }
+anchor-spl.workspace = true
+bitmaps = "3.2.1"
+cfg-if.workspace = true
+solana-program.workspace = true
+solana-address-lookup-table-program.workspace = true
+spl-token-2022 = { workspace = true, features = ["no-entrypoint"] }
+wormhole-anchor-sdk.workspace = true
+wormhole-io.workspace = true
+wormhole-solana-utils.workspace = true
+
+ntt-messages = { path = "../../modules/ntt-messages", features = ["anchor", "hash"] }
+
+[dev-dependencies]
+solana-program-test.workspace = true
+solana-sdk = "*"
+spl-associated-token-account = { version = "3.0.0", features = ["no-entrypoint"] }
+spl-token.workspace = true
+wormhole-sdk.workspace = true
+
+test-utils = { path = "../../tests/cargo" }
+wormhole-governance = { path = "../wormhole-governance", features = ["no-entrypoint"] }

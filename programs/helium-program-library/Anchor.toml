@@ -1,0 +1,159 @@
+[features]
+seeds = true
+docs = false
+
+[programs.localnet]
+lazy_distributor = "1azyuavdMyvsivtNxPoz6SucD18eDHeXzFCUPq5XU7w"
+helium_sub_daos = "hdaoVTCqhfHHo75XdAMxBKdUqvq1i5bF23sisBqVgGR"
+data_credits = "credMBJhYFzfn7NxBMdU4aUqFggAjgztaCcv2Fo6fPT"
+helium_entity_manager = "hemjuPXBpNvggtaUnN1MwT3wrdhttKEfosTcc2P9Pg8"
+circuit_breaker = "circAbx64bbsscPbQzZAUvuXpHqrCe6fLMzc2uKXz9g"
+treasury_management = "treaf4wWBBty3fHdyBpo35Mz84M8k3heKXmjmi9vFt5"
+lazy_transactions = "1atrmQs3eq1N2FEYWu6tyTXbCjP4uQwExpjtnhXtS8h"
+price_oracle = "porcSnvH9pvcYPmQ65Y8qcZSRxQBiBBQX7UV5nmBegy"
+rewards_oracle = "rorcfdX4h9m9swCKgcypaHJ8NGYVANBpmV9EHn3cYrF"
+voter_stake_registry = "hvsrNC3NKbcryqDs2DocYHZ9yPKEVzdSjQG6RVtK1s8"
+fanout = "fanqeMu3fw8R4LwKNbahPtYXJsyLL6NXyfe2BqzhfB6"
+mobile_entity_manager = "memMa1HG4odAFmUbGWfPwS1WWfK95k99F2YTkGvyxZr"
+hexboosting = "hexbnKYoA2GercNNhHUCCfrTRWrHjT6ujKPXTa5NPqJ"
+no_emit = "noEmmgLmQdk6DLiPV8CSwQv3qQDyGEhz9m5A4zhtByv"
+hpl_crons = "hcrLPFgFUY6sCUKzqLWxXx5bntDiDCrAZVcrXfx9AHu"
+mini_fanout = "mfanLprNnaiP4RX9Zz1BMcDosYHCqnG24H1fMEbi9Gn"
+welcome_pack = "we1cGnTxTkDP9Sk49dw1d3T7ik7V2NfnY4qDGCDHXfC"
+dc_auto_top = "topqqzQZroCyRrgyM5zVq6xkFDVnfF13iixSjajydgU"
+tuktuk_dca = "tdcam4m5U74pEZQrsQ7fVAav4AUXXc6z8fkhvExfRVN"
+
+[workspace]
+members = [
+  "programs/lazy-distributor",
+  "programs/data-credits",
+  "programs/helium-sub-daos",
+  "programs/helium-entity-manager",
+  "programs/circuit-breaker",
+  "programs/treasury-management",
+  "programs/lazy-transactions",
+  "programs/price-oracle",
+  "programs/rewards-oracle",
+  "programs/voter-stake-registry",
+  "programs/fanout",
+  "programs/mobile-entity-manager",
+  "programs/hexboosting",
+  "programs/no-emit",
+  "programs/hpl-crons",
+  "programs/mini-fanout",
+  "programs/welcome-pack",
+  "programs/dc-auto-top",
+  "programs/tuktuk-dca",
+]
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "pnpm exec ts-mocha -p ./tsconfig.test.json -t 1000000 tests/**/*.ts"
+
+[test]
+startup_wait = 20000
+
+[test.validator]
+url = "https://api.mainnet-beta.solana.com"
+
+[[test.validator.clone]]
+address = "tuktukUrfhXT6ZT77QTU8RQtvgL967uRuVagWF57zVA" # tuktuk
+
+[[test.validator.clone]]
+address = "HGBovqKte26DbEMBma3T1TvvdmAFYSSgjncRoKECqfXq" # tuktuk config
+
+[[test.validator.clone]]
+address = "GkUxZMcw2RbwZ64VL3MvBtYNV8zim3y7UfzabFTybAUJ" # tuktuk-idl
+
+[[test.validator.clone]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s" # token-metadata
+
+[[test.validator.clone]]
+address = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" # associated-token-program
+
+[[test.validator.clone]]
+address = "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY" # bubblegum
+
+[[test.validator.clone]]
+address = "noopb9bkMVfRPU8AsbpTUg8AQkHtKwMYZiFUjNRtMmV" # noop
+
+[[test.validator.clone]]
+address = "4DdmDswskDxXGpwHrXUfn2CNUm9rt21ac79GHNTN3J33" # hnt feed needed for dc auto top
+
+[[test.validator.clone]]
+address = "Dpw1EAVrSB1ibxiDQyTAW6Zip3J4Btk2x4SgApQCeFbX" # USDC/USD price feed for tuktuk-dca
+
+[[test.validator.clone]]
+address = "4DdmDswskDxXGpwHrXUfn2CNUm9rt21ac79GHNTN3J33" # HNT/USD price feed for tuktuk-dca
+
+[[test.validator.clone]]
+address = "cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK" # account compression
+
+[[test.validator.clone]]
+address = "hgovkRU6Ghe1Qoyb54HdSLdqN7VtxaifBzRmh9jtd3S" # spl governance program
+
+[[test.validator.clone]]
+address = "ENmcpFCpxN1CqyUjuog9yyUVfdXBKF3LVCwLr7grJZpk" # required by spl governance 
+
+[[test.validator.clone]]
+address = "propFYxqmVcufMhk5esNMrexq2ogHbbC2kP9PU1qxKs" # Proposal
+
+[[test.validator.clone]]
+address = "66t3XARU6Ja3zj91gDZ2KoNLJHEMTYPSKqJWYb6PJJBA" # Proposal IDL
+
+[[test.validator.clone]]
+address = "nprx42sXf5rpVnwBWEdRg1d8tuCWsTuVLys1pRWwE6p" # NFT Proxy
+
+[[test.validator.clone]]
+address = "CNjepJnCPddZwd8xGS3M2QpZuCbfVRNvi3jfBehKHKHw" # NFT Proxy IDL
+
+[[test.validator.clone]]
+address = "orgdXvHVLkWgBYerptASkAwkZAE563CJUu717dMNx5f" # Org program
+
+[[test.validator.clone]]
+address = "CjVhwk3gdDXB8iUZCUP9M6QaRvoBGkM7FX9qAf6Qm4sG" # Org program IDL
+
+[[test.validator.clone]]
+address = "stcfiqW3fwD9QCd8Bqr1NBLrs7dftZHBQe7RiMMA4aM" # State controller program
+
+[[test.validator.clone]]
+address = "GPQNABq6s63uqzHRwZN9e2GcxtzG4yLP5AnJer7DkB9E" # State controller IDL
+
+# Pyth price oracle program
+[[test.validator.clone]]
+address = "rec5EKMGg6MxZYaMdyBfgwp4d5rB9T1VQH5pJv5LtFJ"
+
+# Wormhole
+[[test.validator.clone]]
+address = "HDwcJBJXjL9FpJ7UBsYBtaDjsBUhuLCUYoz3zr8SWWaQ"
+
+[[test.validator.clone]]
+address = "5gxPdahvSzcKySxXxPuRXZZ9s6h8hZ88XDVKavWpaQGn" # Wormhole guardian set index 4
+
+[[test.validator.clone]]
+address = "HTczusLJSAhMJKYrxLjSUUyW7YDsBuyfBG8Tj1KJsgni" # Wormhole guardian set index 5
+
+[[test.validator.clone]]
+address = "DaWUKXCyXsnzcvLUyeJRWou8KTn7XtadgTsdhJ6RHS7b"
+
+# Squads multisig program
+[[test.validator.clone]]
+address = "SMPLecH534NA9acpos4G6x7uf3LWbCAwZQE9e8ZekMu"
+
+# [[test.validator.clone]]
+# address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+
+# [[test.validator.clone]]
+# address = "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY"
+
+# [[test.validator.clone]]
+# address = "noopb9bkMVfRPU8AsbpTUg8AQkHtKwMYZiFUjNRtMmV"
+
+# [[test.validator.clone]]
+# address = "cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK"

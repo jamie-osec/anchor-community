@@ -1,0 +1,60 @@
+[package]
+name = "ntt-transceiver"
+version = "3.0.0"
+description = "Example implementation of native token transfer transceiver using Wormhole Post Message Shim and Verify VAA Shim"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "ntt_transceiver"
+
+[features]
+default = []
+no-entrypoint = ["example-native-token-transfers/no-entrypoint"]
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint", "example-native-token-transfers/cpi"]
+idl-build = [
+  "anchor-lang/idl-build",
+  "anchor-spl/idl-build",
+  "example-native-token-transfers/idl-build",
+  "wormhole-anchor-sdk/mainnet",
+  "wormhole-transceiver"
+]
+wormhole-transceiver = ["example-native-token-transfers/cpi"]
+transceiver-type-from-env = []
+# cargo-test-sbf will pass this along
+test-sbf = []
+# only enable for tests
+testing = []
+# networks
+mainnet = [ "wormhole-transceiver", "wormhole-anchor-sdk/mainnet", "wormhole-svm-definitions/solana", "example-native-token-transfers/mainnet" ]
+bridge-address-from-env = [ "wormhole-anchor-sdk/from-env", "wormhole-svm-definitions/from-env", "example-native-token-transfers/bridge-address-from-env" ]
+solana-devnet = [ "wormhole-transceiver", "wormhole-anchor-sdk/solana-devnet", "wormhole-svm-definitions/solana", "wormhole-svm-definitions/testnet", "example-native-token-transfers/solana-devnet" ]
+tilt-devnet = [ "wormhole-transceiver", "wormhole-anchor-sdk/tilt-devnet", "wormhole-svm-definitions/solana", "wormhole-svm-definitions/localnet", "example-native-token-transfers/tilt-devnet" ]
+tilt-devnet2 = [ "wormhole-transceiver", "tilt-devnet", "wormhole-svm-definitions/solana", "wormhole-svm-definitions/localnet", "example-native-token-transfers/tilt-devnet2" ]
+
+[lints]
+workspace = true
+
+[dependencies]
+anchor-lang.workspace = true
+anchor-spl.workspace = true
+cfg-if.workspace = true
+solana-program.workspace = true
+wormhole-anchor-sdk.workspace = true
+wormhole-io.workspace = true
+wormhole-sdk.workspace = true
+
+example-native-token-transfers = { path = "../example-native-token-transfers", default-features = false }
+ntt-messages = { path = "../../modules/ntt-messages", features = ["anchor", "hash"] }
+wormhole-post-message-shim-interface = { git = "https://github.com/wormhole-foundation/wormhole", rev = "325cca4b628f17536f54b079eeb82b41247bfbef", features = ["no-entrypoint", "cpi"] }
+wormhole-verify-vaa-shim-interface = { git = "https://github.com/wormhole-foundation/wormhole", rev = "325cca4b628f17536f54b079eeb82b41247bfbef", features = ["no-entrypoint", "cpi"] }
+wormhole-svm-definitions = { git = "https://github.com/wormhole-foundation/wormhole", rev = "325cca4b628f17536f54b079eeb82b41247bfbef" }
+
+[dev-dependencies]
+solana-program-test.workspace = true
+spl-associated-token-account = { version = "3.0.0", features = ["no-entrypoint"] }
+solana-sdk = "*"
+spl-token.workspace = true
+test-utils = { path = "../../tests/cargo", features = ["shim"] }

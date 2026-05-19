@@ -1,0 +1,122 @@
+import * as anchor from "@coral-xyz/anchor";
+import { PublicKey } from "@solana/web3.js";
+import { QueryTypes, Sequelize, Transaction } from "sequelize";
+import { PG_ASSET_TABLE, SOLANA_URL } from "../env";
+import database, { AssetOwner } from "./database";
+import { chunks, getAssetBatch, truthy } from "@helium/spl-utils";
+import retry from "async-retry";
+import pLimit from "p-limit";
+
+export const upsertOwners = async ({
+  sequelize = database,
+}: {
+  sequelize?: Sequelize;
+}) => {
+  anchor.setProvider(
+    anchor.AnchorProvider.local(process.env.ANCHOR_PROVIDER_URL || SOLANA_URL)
+  );
+  const provider = anchor.getProvider() as anchor.AnchorProvider;
+  const assetPks: PublicKey[] = (
+    (await sequelize.query(`SELECT asset FROM ${PG_ASSET_TABLE};`, {
+      type: QueryTypes.SELECT,
+    })) as { asset: string }[]
+  ).map((row) => new PublicKey(row.asset));
+
+  console.log(`Processing ${assetPks.length} assets for ownership updates`);
+
+  const batchSize = 1000;
+  const limit = pLimit(20);
+  let processedCount = 0;
+
+  const batchPromises = chunks(assetPks, batchSize).map(
+    (assetBatch, batchIndex) =>
+      limit(async () => {
+        try {
+          const assetsWithOwner = (
+            (await retry(
+              async () =>
+                getAssetBatch(provider.connection.rpcEndpoint, assetBatch),
+              { retries: 5, minTimeout: 1000 }
+            )) as { id: PublicKey; ownership: { owner: PublicKey } }[]
+          ).filter(truthy);
+
+          const transaction = await sequelize.transaction({
+            isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+          });
+
+          try {
+            // Get current block for this batch right before committing
+            let lastBlock: number = 0;
+            try {
+              lastBlock = await retry(
+                () => provider.connection.getSlot("finalized"),
+                {
+                  retries: 3,
+                  factor: 2,
+                  minTimeout: 1000,
+                  maxTimeout: 5000,
+                }
+              );
+            } catch (error) {
+              console.warn(
+                `Failed to fetch block for batch ${batchIndex + 1}:`,
+                error
+              );
+            }
+
+            const assetsWithOwnerAndBlock = assetsWithOwner.map(
+              ({ id, ownership }) => ({
+                asset: id.toBase58(),
+                owner: ownership.owner.toBase58(),
+                lastBlock,
+              })
+            );
+
+            const existingOwners = await AssetOwner.findAll({
+              where: {
+                asset: assetsWithOwnerAndBlock.map((a) => a.asset),
+              },
+              attributes: ["asset", "owner"],
+              transaction,
+              raw: true,
+            });
+
+            const existingOwnerMap = new Map(
+              existingOwners.map((a: any) => [a.asset, a.owner])
+            );
+
+            const assetsToUpdate = assetsWithOwnerAndBlock.filter((a) => {
+              const existing = existingOwnerMap.get(a.asset);
+              return !existing || existing !== a.owner;
+            });
+
+            if (assetsToUpdate.length > 0) {
+              await AssetOwner.bulkCreate(assetsToUpdate, {
+                updateOnDuplicate: ['owner', 'lastBlock'],
+                transaction,
+              });
+            }
+
+            await transaction.commit();
+
+            processedCount += assetsToUpdate.length;
+          } catch (err) {
+            await transaction.rollback();
+            throw err;
+          }
+        } catch (err) {
+          console.error(`Error processing batch ${batchIndex + 1}:`, err);
+          throw err;
+        }
+      })
+  );
+
+  await Promise.all(batchPromises);
+  console.log(
+    `Finished processing ${
+      assetPks.length
+    } assets: ${processedCount} updated, ${
+      assetPks.length - processedCount
+    } unchanged`
+  );
+};

@@ -1,0 +1,31 @@
+{
+  "web": {
+    "blockchain-api": "./packages/blockchain-api",
+    "helium-vote-service": "./packages/helium-vote-service",
+    "solana-monitor": "./packages/monitor-service",
+    "ecc-verifier": "./utils/ecc-sig-verifier",
+    "entity-metadata-service": "./packages/metadata-service",
+    "fanout-metadata-service": "./packages/fanout-metadata-service",
+    "faucet-service": "./packages/faucet-service",
+    "helius-service": "./packages/helius-service",
+    "tokens-to-rent-service": "./packages/tokens-to-rent-service",
+    "migration-service": "./packages/migration-service",
+    "vsr-metadata-service": "./packages/vsr-metadata-service",
+    "account-postgres-sink-service": "./packages/account-postgres-sink-service",
+    "crons": "./packages/crons",
+    "rewards-oracle-faucet-service": "./packages/rewards-oracle-faucet-service",
+    "entity-invalidator": "./packages/entity-invalidator",
+    "geocoder-service": "./packages/geocoder-service",
+    "recent-helium-transactions-service": "./packages/recent-helium-transactions-service",
+    "asset-ownership-service": "./packages/asset-ownership-service",
+    "tuktuk-pyth-service": "./packages/tuktuk-pyth-service",
+    "tuktuk-dca-service": "./packages/tuktuk-dca-service",
+    "atomic-data-publisher-service": "./utils/atomic-data-publisher"
+  },
+  "oracle": {
+    "distributor-oracle": "./packages/distributor-oracle"
+  },
+  "data": {
+    "active-hotspot-oracle": "./utils/active-hotspot-oracle"
+  }
+}

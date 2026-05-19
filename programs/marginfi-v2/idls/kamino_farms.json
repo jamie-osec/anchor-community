@@ -1,0 +1,418 @@
+{
+  "address": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
+  "metadata": {
+    "name": "farms",
+    "version": "1.6.5",
+    "spec": "0.1.0",
+    "address": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+  },
+  "instructions": [
+    {
+      "name": "harvest_reward",
+      "discriminator": [
+        68,
+        200,
+        228,
+        233,
+        184,
+        32,
+        226,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_state",
+          "writable": true
+        },
+        {
+          "name": "farm_state",
+          "writable": true
+        },
+        {
+          "name": "global_config"
+        },
+        {
+          "name": "reward_mint"
+        },
+        {
+          "name": "user_reward_token_account",
+          "writable": true
+        },
+        {
+          "name": "rewards_vault",
+          "writable": true
+        },
+        {
+          "name": "rewards_treasury_vault",
+          "writable": true
+        },
+        {
+          "name": "farm_vaults_authority"
+        },
+        {
+          "name": "scope_prices",
+          "optional": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "reward_index",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "StakeZero",
+      "msg": "Cannot stake 0 amount"
+    },
+    {
+      "code": 6001,
+      "name": "UnstakeZero",
+      "msg": "Cannot unstake 0 amount"
+    },
+    {
+      "code": 6002,
+      "name": "NothingToUnstake",
+      "msg": "Nothing to unstake"
+    },
+    {
+      "code": 6003,
+      "name": "NoRewardToHarvest",
+      "msg": "No reward to harvest"
+    },
+    {
+      "code": 6004,
+      "name": "NoRewardInList",
+      "msg": "Reward not present in reward list"
+    },
+    {
+      "code": 6005,
+      "name": "RewardAlreadyInitialized",
+      "msg": "Reward already initialized"
+    },
+    {
+      "code": 6006,
+      "name": "MaxRewardNumberReached",
+      "msg": "Max number of reward tokens reached"
+    },
+    {
+      "code": 6007,
+      "name": "RewardDoesNotExist",
+      "msg": "Reward does not exist"
+    },
+    {
+      "code": 6008,
+      "name": "WrongRewardVaultAccount",
+      "msg": "Reward vault exists but the account is wrong"
+    },
+    {
+      "code": 6009,
+      "name": "RewardVaultMismatch",
+      "msg": "Reward vault pubkey does not match staking pool vault"
+    },
+    {
+      "code": 6010,
+      "name": "RewardVaultAuthorityMismatch",
+      "msg": "Reward vault authority pubkey does not match staking pool vault"
+    },
+    {
+      "code": 6011,
+      "name": "NothingStaked",
+      "msg": "Nothing staked, cannot collect any rewards"
+    },
+    {
+      "code": 6012,
+      "name": "IntegerOverflow",
+      "msg": "Integer overflow"
+    },
+    {
+      "code": 6013,
+      "name": "ConversionFailure",
+      "msg": "Conversion failure"
+    },
+    {
+      "code": 6014,
+      "name": "UnexpectedAccount",
+      "msg": "Unexpected account in instruction"
+    },
+    {
+      "code": 6015,
+      "name": "OperationForbidden",
+      "msg": "Operation forbidden"
+    },
+    {
+      "code": 6016,
+      "name": "MathOverflow",
+      "msg": "Mathematical operation with overflow"
+    },
+    {
+      "code": 6017,
+      "name": "MinClaimDurationNotReached",
+      "msg": "Minimum claim duration has not been reached"
+    },
+    {
+      "code": 6018,
+      "name": "RewardsVaultHasDelegate",
+      "msg": "Reward vault has a delegate"
+    },
+    {
+      "code": 6019,
+      "name": "RewardsVaultHasCloseAuthority",
+      "msg": "Reward vault has a close authority"
+    },
+    {
+      "code": 6020,
+      "name": "FarmVaultHasDelegate",
+      "msg": "Farm vault has a delegate"
+    },
+    {
+      "code": 6021,
+      "name": "FarmVaultHasCloseAuthority",
+      "msg": "Farm vault has a close authority"
+    },
+    {
+      "code": 6022,
+      "name": "RewardsTreasuryVaultHasDelegate",
+      "msg": "Reward vault has a delegate"
+    },
+    {
+      "code": 6023,
+      "name": "RewardsTreasuryVaultHasCloseAuthority",
+      "msg": "Reward vault has a close authority"
+    },
+    {
+      "code": 6024,
+      "name": "UserAtaRewardVaultMintMissmatch",
+      "msg": "User ata and reward vault have different mints"
+    },
+    {
+      "code": 6025,
+      "name": "UserAtaFarmTokenMintMissmatch",
+      "msg": "User ata and farm token have different mints"
+    },
+    {
+      "code": 6026,
+      "name": "TokenFarmTokenMintMissmatch",
+      "msg": "Token mint and farm token have different mints"
+    },
+    {
+      "code": 6027,
+      "name": "RewardAtaRewardMintMissmatch",
+      "msg": "Reward ata mint is different than reward mint"
+    },
+    {
+      "code": 6028,
+      "name": "RewardAtaOwnerNotPayer",
+      "msg": "Reward ata owner is different than payer"
+    },
+    {
+      "code": 6029,
+      "name": "InvalidGlobalConfigMode",
+      "msg": "Mode to update global_config is invalid"
+    },
+    {
+      "code": 6030,
+      "name": "RewardIndexOutOfRange",
+      "msg": "Reward Index is higher than number of rewards"
+    },
+    {
+      "code": 6031,
+      "name": "NothingToWithdraw",
+      "msg": "No tokens available to withdraw"
+    },
+    {
+      "code": 6032,
+      "name": "UserDelegatedFarmNonDelegatedMissmatch",
+      "msg": "user, user_ref, authority and payer must match for non-delegated farm"
+    },
+    {
+      "code": 6033,
+      "name": "AuthorityFarmDelegateMissmatch",
+      "msg": "Authority must match farm delegate authority"
+    },
+    {
+      "code": 6034,
+      "name": "FarmNotDelegated",
+      "msg": "Farm not delegated, can not complete operation"
+    },
+    {
+      "code": 6035,
+      "name": "FarmDelegated",
+      "msg": "Operation not allowed for delegated farm"
+    },
+    {
+      "code": 6036,
+      "name": "UnstakeNotElapsed",
+      "msg": "Unstake lockup period is not elapsed. Deposit is locked until end of unstake period"
+    },
+    {
+      "code": 6037,
+      "name": "PendingWithdrawalNotWithdrawnYet",
+      "msg": "Pending withdrawal already exist and not withdrawn yet"
+    },
+    {
+      "code": 6038,
+      "name": "DepositZero",
+      "msg": "Cannot deposit zero amount directly to farm vault"
+    },
+    {
+      "code": 6039,
+      "name": "InvalidConfigValue",
+      "msg": "Invalid config value"
+    },
+    {
+      "code": 6040,
+      "name": "InvalidPenaltyPercentage",
+      "msg": "Invalid penalty percentage"
+    },
+    {
+      "code": 6041,
+      "name": "EarlyWithdrawalNotAllowed",
+      "msg": "Early withdrawal not allowed"
+    },
+    {
+      "code": 6042,
+      "name": "InvalidLockingTimestamps",
+      "msg": "Invalid locking timestamps"
+    },
+    {
+      "code": 6043,
+      "name": "InvalidRpsCurvePoint",
+      "msg": "Invalid reward rate curve point"
+    },
+    {
+      "code": 6044,
+      "name": "InvalidTimestamp",
+      "msg": "Invalid timestamp"
+    },
+    {
+      "code": 6045,
+      "name": "DepositCapReached",
+      "msg": "Deposit cap reached"
+    },
+    {
+      "code": 6046,
+      "name": "MissingScopePrices",
+      "msg": "Missing Scope Prices"
+    },
+    {
+      "code": 6047,
+      "name": "ScopeOraclePriceTooOld",
+      "msg": "Scope Oracle Price Too Old"
+    },
+    {
+      "code": 6048,
+      "name": "InvalidOracleConfig",
+      "msg": "Invalid Oracle Config"
+    },
+    {
+      "code": 6049,
+      "name": "CouldNotDeserializeScope",
+      "msg": "Could not deserialize scope"
+    },
+    {
+      "code": 6050,
+      "name": "RewardAtaOwnerNotAdmin",
+      "msg": "Reward ata owner is different than farm admin"
+    },
+    {
+      "code": 6051,
+      "name": "WithdrawRewardZeroAvailable",
+      "msg": "Cannot withdraw reward as available amount is zero"
+    },
+    {
+      "code": 6052,
+      "name": "RewardScheduleCurveSet",
+      "msg": "Cannot withdraw reward as reward schedule is set"
+    },
+    {
+      "code": 6053,
+      "name": "UnsupportedTokenExtension",
+      "msg": "Cannot initialize farm while having a mint with token22 and requested extensions"
+    },
+    {
+      "code": 6054,
+      "name": "InvalidFarmConfigUpdateAuthority",
+      "msg": "Invalid authority for updating farm config"
+    },
+    {
+      "code": 6055,
+      "name": "InvalidTransferOwnershipOldOwner",
+      "msg": "Invalid authority for transfer ownersip new user state initialization"
+    },
+    {
+      "code": 6056,
+      "name": "InvalidTransferOwnershipFarmState",
+      "msg": "Invalid farm state for transfer ownership new user state initialization"
+    },
+    {
+      "code": 6057,
+      "name": "InvalidTransferOwnershipUserStateOwnerDelegatee",
+      "msg": "Invalid user state for transfer ownership, owner must match delegatee"
+    },
+    {
+      "code": 6058,
+      "name": "InvalidTransferOwnershipFarmStateLockingMode",
+      "msg": "Invalid farm state locking mode for transfer ownership, must be 0"
+    },
+    {
+      "code": 6059,
+      "name": "InvalidTransferOwnershipFarmStateWithdrawCooldownPeriod",
+      "msg": "Invalid farm state withdrawal cooldown period for transfer ownership, must be 0"
+    },
+    {
+      "code": 6060,
+      "name": "InvalidTransferOwnershipStakeAmount",
+      "msg": "Invalid transfer ownership stake amount, must be equal to unstaked deposits"
+    },
+    {
+      "code": 6061,
+      "name": "InvalidTransferOwnershipNewOwner",
+      "msg": "Invalid authority for transfer ownersip new user state initialization"
+    },
+    {
+      "code": 6062,
+      "name": "InvalidTransferOwnershipFarmStateDepositWarmupPeriod",
+      "msg": "Invalid farm state deposit warmup period for transfer ownership, must be 0 if old user has stake"
+    },
+    {
+      "code": 6063,
+      "name": "RewardUserOnceFeatureDisabled",
+      "msg": "Reward User Once feature is disabled"
+    },
+    {
+      "code": 6064,
+      "name": "InvalidDelegatedAuthorityUpdate",
+      "msg": "Can not set delegate_authority to default pubkey - farm is delegated"
+    },
+    {
+      "code": 6065,
+      "name": "UserTokenAccountOwnerMismatch",
+      "msg": "User token account owner does not match user state owner"
+    },
+    {
+      "code": 6066,
+      "name": "HarvestingNotPermissionlessPayerMismatch",
+      "msg": "Harvesting is not permissionless, payer does not match user state owner"
+    },
+    {
+      "code": 6067,
+      "name": "CurrentRewardIssuedUnclaimedMismatch",
+      "msg": "Current reward issued unclaimed does not match expected value"
+    }
+  ],
+  "types": [],
+  "events": []
+}

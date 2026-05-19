@@ -1,0 +1,45 @@
+[package]
+name = "gmsol-utils"
+version.workspace = true
+edition.workspace = true
+license-file.workspace = true
+description.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/gmsol-utils"
+readme.workspace = true
+keywords.workspace = true
+
+[features]
+debug = ["derive_more/debug"]
+display = []
+serde = ["dep:serde", "serde_with", "serde_bytes"]
+idl-build = ["anchor-lang/idl-build"]
+devnet = []
+enum-iter = []
+instruction = []
+treasury = []
+security-txt = ["solana-security-txt"]
+
+[dependencies]
+anchor-lang = { workspace = true }
+thiserror = { workspace = true }
+paste = { workspace = true }
+bytemuck = { workspace = true, features = ["derive"] }
+static_assertions = { workspace = true }
+ruint = { workspace = true, default-features = false }
+bitmaps = { workspace = true }
+strum = { workspace = true, features = ["derive"] }
+num_enum = { workspace = true }
+serde = { workspace = true, optional = true, features = ["derive"] }
+serde_with = { workspace = true, optional = true }
+serde_bytes = { workspace = true, optional = true }
+clap = { workspace = true, optional = true, features = ["derive"] }
+derive_more = { workspace = true, optional = true }
+solana-security-txt = { workspace = true, optional = true }
+
+[dev-dependencies]
+num_enum = { workspace = true }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

@@ -1,0 +1,206 @@
+@startuml
+
+frame HeliumSubDaos {
+  entity Dao {
+    "dao", mint
+    --
+    hnt_mint // w/ circuit breaker
+    authority
+    reward per epoch
+    dc_mint
+  }
+
+  entity SubDao {
+    "subdao", mint
+    --
+    dao
+    mint
+    treasury
+    schedule
+    rewards_escrow
+    authority
+    hotspot_collection
+  }
+
+  entity DaoEpochInfo {
+    "sub_dao_epoch_info", sub_dao, epoch
+    --
+    dao
+    ...
+  }
+
+  entity SubDaoEpochInfo {
+    "sub_dao_epoch_info", sub_dao, epoch
+    --
+    sub_dao
+    ...
+  }
+}
+
+frame DataCredits {
+  entity DataCredits {
+    "data_credits", dc_mint
+    --
+    dc_mint
+    ...
+  }
+
+  entity DelegatedDataCredits {
+    "delegated_data_credits", sub_dao, owner
+    --
+    data_credits
+    sub_dao
+    manager
+    owner
+    account
+    ...
+  }
+}
+
+frame SplToken {
+  entity DelegatedDataCreditsTokenAccount {
+    "delegated_data_credits_account", delegated_data_credits
+    --
+    amount
+    owner // Will be manager
+  }
+
+  entity TreasuryTokenAccount {
+    ...
+  }
+}
+
+frame CircuitBreaker {
+  entity MintWindowedCircuitBreaker {
+    "mint_circuit_breaker", mint
+    --
+    mint
+    config
+    authority
+    last_aggregated_amount
+    ...
+  }
+
+  entity AccountWindowedCircuitBreaker {
+    "account_circuit_breaker", token_account
+    --
+    token_account
+    config
+    authority
+    last_aggregated_amount
+    ...
+  }
+}
+
+frame HeliumEntityManager {
+  entity HotspotConfig {
+    "hotspot_config", sub_dao, symbol
+    --
+    sub_dao
+    symbol
+    dc_fee
+    collection
+    authority
+  }
+
+  entity HotspotIssuer {
+    "hotspot_issuer", hotspot_config, maker
+    --
+    hotspot_config
+    maker
+    authority
+    ...
+  }
+
+  entity IotHotspotInfo {
+    "iot_info", hotspot_mint
+    --
+    ecc_compact
+    location
+    authority
+  }
+}
+
+frame LazyDistributor {
+  entity LazyDistributor {
+    "lazy_distributor", rewards_mint
+    --
+    oracle_configs
+    rewards_mint // w/ circuit breaker
+    rewards_escrow
+    ...
+  }
+
+  entity Recipient {
+    "recipient", lazy_distributor, mint
+    ---
+    lazy_distributor
+    mint // nft
+    total_rewards
+    current_rewards
+    ...
+  }
+}
+
+frame Metaplex {
+  entity Collection {
+    "hotspot", sub_dao, symbol
+  }
+
+  entity RewardableNFT {
+    "metadata", metadata_program_id, mint
+    --
+    name
+    symbol
+    url
+    ...
+  }
+}
+
+frame TreasuryManagement {
+  entity TreasuryManagement {
+    "treasury_management", treasury
+    --
+    treasury
+    reserve_mint
+    supply_mint
+    authority
+    curve
+    ...
+  }
+}
+
+
+DataCredits  ||--o{ DelegatedDataCredits
+DelegatedDataCredits ||--|| DelegatedDataCreditsTokenAccount
+
+SubDao ||--o{ DelegatedDataCredits
+
+SubDao ||--|| TreasuryTokenAccount
+TreasuryTokenAccount ||--|| TreasuryManagement
+
+TreasuryTokenAccount ||--|| AccountWindowedCircuitBreaker : pda(account)
+
+SubDao ||-|| LazyDistributor : pda(rewards_escrow)
+
+SubDao ||-|| Collection
+
+TreasuryManagement ||--|| AccountWindowedCircuitBreaker : pda(treasury)
+
+
+Dao ||--o{ SubDao
+Dao ||--o{ DaoEpochInfo 
+SubDao ||--o{ SubDaoEpochInfo
+
+HotspotConfig ||--o{ HotspotIssuer
+HotspotConfig ||--|| Collection
+
+LazyDistributor ||--o{ Recipient
+
+Recipient }o--|| RewardableNFT
+
+RewardableNFT ||-|| Collection
+
+IotHotspotInfo ||-|| RewardableNFT : pda(hotspot_mint)
+
+@enduml

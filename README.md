@@ -1,0 +1,33 @@
+# Anchor Community Repositories
+
+A starter directory of substantial, well-written Anchor repositories in the Solana ecosystem.
+
+The first pass is biased toward protocols that are large on DeFiLlama and have public program source that is useful to read, audit, or learn from. This is not an endorsement of protocol risk, only a source-code reading list.
+
+| Repository | Vendored path | Description |
+| --- | --- | --- |
+| [Kamino Finance / klend](https://github.com/Kamino-Finance/klend) | [programs/klend](programs/klend) | Kamino's core lending and borrowing program. A large production Anchor codebase for lending markets, reserves, obligations, liquidations, risk configuration, and deployment management. |
+| [Orca / whirlpools](https://github.com/orca-so/whirlpools) | [programs/whirlpools](programs/whirlpools) | Orca's concentrated liquidity AMM. Strong reference for a production AMM with Anchor program source, SDKs, IDLs, verifiable builds, audits, and extensive protocol documentation. |
+| [Drift Labs / protocol-v2](https://github.com/drift-labs/protocol-v2) | [programs/protocol-v2](programs/protocol-v2) | Drift's v2 on-chain exchange codebase. Useful for studying a complex Anchor monorepo with perpetuals, spot markets, risk controls, oracle integrations, keeper flows, SDKs, and tests. |
+| [Project Zero / marginfi-v2](https://github.com/0dotxyz/marginfi-v2) | [programs/marginfi-v2](programs/marginfi-v2) | marginfi's lending protocol, now maintained under Project Zero. Good reference for a production Anchor lending market with account health, bank configuration, liquidations, emissions, clients, and verification docs. |
+| [Raydium / raydium-clmm](https://github.com/raydium-io/raydium-clmm) | [programs/raydium-clmm](programs/raydium-clmm) | Raydium's concentrated liquidity market maker. A high-value AMM reference for ticks, positions, rewards, pool math, and Anchor-compatible CLMM integrations. |
+| [Raydium / raydium-cp-swap](https://github.com/raydium-io/raydium-cp-swap) | [programs/raydium-cp-swap](programs/raydium-cp-swap) | Raydium's constant product swap program. Useful as a smaller modern AMM companion to the CLMM repository. |
+| [Meteora / damm-v2](https://github.com/MeteoraAg/damm-v2) | [programs/damm-v2](programs/damm-v2) | Meteora's DAMM v2 program. Production Anchor source for configurable constant-product pools, Token-2022 support, position NFTs, fee scheduling, dynamic fees, rewards, and pool lifecycle controls. |
+| [Meteora / dynamic-bonding-curve](https://github.com/MeteoraAg/dynamic-bonding-curve) | [programs/dynamic-bonding-curve](programs/dynamic-bonding-curve) | Meteora's launch-pool and bonding-curve program. Useful for studying configurable virtual curves, graduation into DAMM pools, fee routing, partner configuration, and Token-2022 support. |
+| [Marinade Finance / liquid-staking-program](https://github.com/marinade-finance/liquid-staking-program) | [programs/liquid-staking-program](programs/liquid-staking-program) | Marinade's liquid staking program. One of the long-running Anchor-based Solana staking protocols, with design docs and audit history around stake delegation, mSOL minting, and unstaking flows. |
+| [Jito Foundation / stakenet](https://github.com/jito-foundation/stakenet) | [programs/stakenet](programs/stakenet) | Jito StakeNet. Anchor programs for validator history and stake-pool stewardship, useful for studying autonomous stake delegation and permissionless crank operations around a major liquid staking pool. |
+| [blockworks-foundation / mango-v4](https://github.com/blockworks-foundation/mango-v4) | [programs/mango-v4](programs/mango-v4) | Mango v4. A mature Anchor monorepo for cross-margin spot, perps, lending, risk, clients, and operational tooling. |
+| [gmsol-labs / gmx-solana](https://github.com/gmsol-labs/gmx-solana) | [programs/gmx-solana](programs/gmx-solana) | GMX Solana / GMTrade programs. A Rust-heavy Anchor codebase for perps-style exchange infrastructure, market stores, liquidity provider flows, treasury, timelock, SDKs, and audited program releases. |
+| [openbook-dex / openbook-v2](https://github.com/openbook-dex/openbook-v2) | [programs/openbook-v2](programs/openbook-v2) | OpenBook v2 central limit order book. A major Anchor-based market-structure repo with the on-chain order book program, client libraries, IDLs, tests, and audit materials. |
+| [ONRE / onre-sol](https://github.com/onre-finance/onre-sol) | [programs/onre-sol](programs/onre-sol) | ONRE's tokenized reinsurance pool program. A newer production Anchor repo with permissioned pool operations, offers, redemptions, vault flows, role management, and Trident tests. |
+| [Helium / helium-program-library](https://github.com/helium/helium-program-library) | [programs/helium-program-library](programs/helium-program-library) | Helium's Solana program monorepo. A strong production reference for Anchor programs that coordinate token governance, subDAOs, rewards distribution, data credits, lazy transactions, and network-specific account flows. |
+| [Wormhole / native-token-transfers](https://github.com/wormhole-foundation/native-token-transfers) | [programs/native-token-transfers](programs/native-token-transfers) | Wormhole Native Token Transfers. Includes Solana Anchor programs for cross-chain token transfer managers, transceivers, rate limits, governance, and multichain deployment tooling. |
+| [Squads Protocol / v4](https://github.com/Squads-Protocol/v4) | [programs/v4](programs/v4) | Squads v4 multisig. Not DeFi TVL-first, but important Solana infrastructure and a strong Anchor reference for multisig accounts, proposals, spending limits, program upgrades, and verifiable builds. |
+
+For a machine-parseable format, see [repos.json](repos.json).
+
+To vendor every pinned repository into `./programs`, run `make fetch`. To fetch and build every pinned repository, run `make build`. To build one repository, run `make build REPO=helium-program-library`.
+
+`make fetch` clones each repository into a temporary directory, checks out the pinned commit, removes `.git`, prunes every path listed in that repo's `ignored` array, and vendors the remaining tree into `programs/<directory>`. If that directory already exists, it must be structurally identical with matching file hashes or the fetch fails.
+
+Fetching requires `make`, `python3`, and `git`; building also requires `anchor`.

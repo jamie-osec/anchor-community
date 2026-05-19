@@ -1,0 +1,33 @@
+[package]
+name = "vehnt"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anchor-lang = "0.31.1"
+anchor-client = "0.31.0"
+clap = { version = "4", features = ["derive"]}
+reqwest = "0"
+serde = { version = "*", features = ["derive"] }
+serde_json = "*"
+json = "*"
+lazy_static = "1"
+solana-account-decoder = "2.2.3"
+solana-client = "2.2.3"
+solana-sdk = "2.2.1"
+solana-program = "2.2.1"
+tokio = "1"
+thiserror = "1"
+rust_decimal = "1"
+base64 = "*"
+helium-sub-daos = { path = "../../programs/helium-sub-daos" }
+voter-stake-registry = { path = "../../programs/voter-stake-registry" }
+
+[dependencies.ledger-transport]
+git = "https://github.com/helium/ledger-rs"
+branch = "lthiery/tcp-transport"
+default-features = false
+features = ["transport-hid", "transport-tcp"]
+time = "0.3.36"
