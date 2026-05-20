@@ -54,7 +54,7 @@
     "source": "https://github.com/0dotxyz/marginfi-v2",
     "commit": "843aa82df852b9e9a3c555e67ffd12aa53f4805b",
     "directory": "marginfi-v2",
-    "build_command": "anchor keys sync && anchor build",
+    "build_command": "anchor keys sync && anchor build --no-idl",
     "ignored": [
       "audits",
       "target",
