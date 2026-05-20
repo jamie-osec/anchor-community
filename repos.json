@@ -186,7 +186,7 @@
     "source": "https://github.com/openbook-dex/openbook-v2",
     "commit": "f3e17421e675b083b584867594bf3cf4f675d156",
     "directory": "openbook-v2",
-    "build_command": "anchor keys sync && anchor build",
+    "build_command": "anchor keys sync && anchor build -- --features enable-gpl",
     "ignored": [
       "audit",
       "target"
