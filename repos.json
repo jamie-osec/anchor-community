@@ -284,7 +284,7 @@
     "source": "https://github.com/Squads-Protocol/v4",
     "commit": "edbca83427b10cbe58bf65fc9b597e8eb7b17cc1",
     "directory": "v4",
-    "build_command": "anchor keys sync && anchor build",
+    "build_command": "cargo update -p indexmap@2.12.1 --precise 2.11.4 && anchor keys sync && anchor build",
     "ignored": [
       "app",
       "audits",
