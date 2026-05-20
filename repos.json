@@ -259,7 +259,7 @@
     "source": "https://github.com/wormhole-foundation/native-token-transfers",
     "commit": "3fb0fc97b65246167de14bcdaaf3c4eadba8927b",
     "directory": "native-token-transfers",
-    "build_command": "cd solana && anchor keys sync && anchor build",
+    "build_command": "cd solana && anchor keys sync && anchor build -- --features mainnet",
     "ignored": [
       "audits",
       "docs",
