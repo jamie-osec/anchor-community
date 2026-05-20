@@ -129,7 +129,7 @@
     "source": "https://github.com/marinade-finance/liquid-staking-program",
     "commit": "26147376b75d8c971963da458623e646f2795e15",
     "directory": "liquid-staking-program",
-    "build_command": "anchor keys sync && anchor build",
+    "build_command": "anchor build",
     "ignored": [
       "target"
     ]
