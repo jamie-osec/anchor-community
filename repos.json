@@ -177,8 +177,7 @@
       "external-programs/chainlink-store.so",
       "external-programs/pyth-push-oracle.so",
       "external-programs/pyth-receiver.so",
-      "external-programs/wormhole.so",
-      "crates/programs/idls"
+      "external-programs/wormhole.so"
     ]
   },
   {

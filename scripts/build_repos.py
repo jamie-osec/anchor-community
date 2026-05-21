@@ -169,6 +169,22 @@ def remove_ignored(repo, root):
         log_repo(repo, f"removed ignored paths: {', '.join(removed)}")
 
 
+def prune_empty_dirs(root):
+    root = root.absolute()
+    for current, dirnames, _ in os.walk(root, topdown=False, followlinks=False):
+        current_path = Path(current)
+        if current_path == root:
+            continue
+
+        if current_path.is_symlink():
+            continue
+
+        try:
+            next(current_path.iterdir())
+        except StopIteration:
+            current_path.rmdir()
+
+
 def hash_file(path):
     digest = hashlib.sha256()
     with path.open("rb") as f:
@@ -256,6 +272,7 @@ def vendor_repo(repo, programs_dir):
         clone_path = Path(tmp) / "repo"
         clone_at_commit(repo, clone_path)
         remove_ignored(repo, clone_path)
+        prune_empty_dirs(clone_path)
 
         if not target.exists():
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -270,6 +287,7 @@ def vendor_repo(repo, programs_dir):
             raise RuntimeError(f"{target} exists but is not a directory")
 
         remove_ignored(repo, target)
+        prune_empty_dirs(target)
         log_repo(repo, "existing tree found; verifying recursive file hashes")
         target_hash, target_entries = hash_folder_recursive(target)
         clone_hash, clone_entries = hash_folder_recursive(clone_path)
