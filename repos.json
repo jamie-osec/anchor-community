@@ -4,7 +4,7 @@
     "source": "https://github.com/Kamino-Finance/klend",
     "commit": "4c7653a12276ded3bcaf95a3474973ca135ca810",
     "directory": "klend",
-    "build_command": "cargo build-sbf --manifest-path programs/klend/Cargo.toml",
+    "build_command": "avm solana install && avm platform-tools install && cargo build-sbf --manifest-path programs/klend/Cargo.toml",
     "ignored": [
       "target",
       "libs/klend-interface/docs"
@@ -154,7 +154,7 @@
     "source": "https://github.com/blockworks-foundation/mango-v4",
     "commit": "ee671d24bb4f9386adc2d146f5180d4760838222",
     "directory": "mango-v4",
-    "build_command": "cargo build-sbf --manifest-path programs/mango-v4/Cargo.toml --features enable-gpl",
+    "build_command": "avm solana install && avm platform-tools install && cargo build-sbf --manifest-path programs/mango-v4/Cargo.toml --features enable-gpl",
     "ignored": [
       "audits",
       "docs",
@@ -185,7 +185,7 @@
     "source": "https://github.com/openbook-dex/openbook-v2",
     "commit": "f3e17421e675b083b584867594bf3cf4f675d156",
     "directory": "openbook-v2",
-    "build_command": "cargo build-sbf --manifest-path programs/openbook-v2/Cargo.toml --features enable-gpl",
+    "build_command": "avm solana install && avm platform-tools install && cargo build-sbf --manifest-path programs/openbook-v2/Cargo.toml --features enable-gpl",
     "ignored": [
       "audit",
       "target"
@@ -258,7 +258,7 @@
     "source": "https://github.com/wormhole-foundation/native-token-transfers",
     "commit": "3fb0fc97b65246167de14bcdaaf3c4eadba8927b",
     "directory": "native-token-transfers",
-    "build_command": "cd solana && cargo build-sbf --manifest-path Cargo.toml --features mainnet",
+    "build_command": "cd solana && avm solana install && avm platform-tools install && cargo build-sbf --manifest-path Cargo.toml --features mainnet",
     "ignored": [
       "audits",
       "docs",
